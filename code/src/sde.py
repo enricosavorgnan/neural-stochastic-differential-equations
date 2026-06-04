@@ -223,15 +223,19 @@ class SDESolver:
         optim = optimizer if optimizer else torch.optim.Adam(self.sde.parameters(), lr=0.01)
         loss_value = torch.tensor(0.0)
 
-        for _iter in range(n_iters):
+        print(f"Iteration 0/{n_iters}, \t"
+              f"Loss: ND, \t\t"
+              f"Params: {self.sde.params.data.numpy()}")
+
+        for _iter in range(1, n_iters+1):
             optim.zero_grad()
             Xs = self.trajectory(adjoint=adjoint, **kwargs)
             loss_value = loss(Xs, target_trajectory)
             loss_value.backward()
             optim.step()
 
-            print(f"Iteration {_iter}/{n_iters}, "
-                  f"Loss: {loss_value.item():.4f}, "
+            print(f"Iteration {_iter}/{n_iters}, \t"
+                  f"Loss: {loss_value.item():.4f}, \t"
                   f"Params: {self.sde.params.data.numpy()}")
 
         params_grad = self.sde.params.grad.clone().detach()
@@ -269,10 +273,12 @@ if __name__ == "__main__":
 
     kwargs = get_sde_kwargs(config=config, approx=True)
     learnable_solver = SDESolver(f=f, g=g, **kwargs)
-
     optimizer = eval(config['training']['optimizer'],
                      globals=eval_namespace,
-                     locals = {"params": learnable_solver.sde.parameters(), "lr": config['training']['lr']})
+                     locals = {"params": learnable_solver.sde.parameters(),
+                               "lr": config['training']['lr']}
+                     )
+
     learnable_solver.train(loss=loss,
                            optimizer= optimizer,
                            target_trajectory=target_Xs,
