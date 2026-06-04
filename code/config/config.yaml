@@ -7,7 +7,7 @@ sde:
   sde_type : 'stratonovich'
   params_sample_type : 'gaussian'
   noise_type : 'diagonal'
-  t_span : [0, 10]
+  t_span : [0, 15]
   t_size : 100
 
   drift : "-p[0] * x"
@@ -21,10 +21,11 @@ sde:
 
 training:
   device : "cpu"
-  n_iters : 10
+  n_iters : 200
   loss : "nn.MSELoss()"
   optimizer : "torch.optim.Adam(params, lr=lr)"
   lr : 0.02
   plot : True
   save : True
   save_path : "./code/img/"
+  skip_samples : 20

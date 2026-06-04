@@ -195,9 +195,13 @@ class SDESolver:
         return Xs
 
 
-    def plot(self, ts, samples : torch.Tensor, xlabel, ylabel, title=''):
+    def plot(self, ts, samples : torch.Tensor, xlabel, ylabel, title='', **kwargs):
         ts = ts.cpu()
         samples = samples.squeeze().cpu()
+
+        # keep only one sample after a fixed number of skip-samples for better visualization
+        skip_samples = kwargs.get('skip_samples', 1)
+        samples = samples[::skip_samples]
 
         fig = plt.figure(dpi=600)
         for i, sample in enumerate(samples):
@@ -209,6 +213,45 @@ class SDESolver:
         plt.legend()
 
         return fig
+
+
+    def plot_fig(self, trajectories, target_trajectory, n_iters, optim, **kwargs):
+        # merge trajectories and target trajectory for plotting
+        trajectories = torch.cat((trajectories, target_trajectory.unsqueeze(0)), dim=0)
+        # remove initial trajectory (iteration 0) for better visualization
+        trajectories = trajectories[1:]
+
+        fig = self.plot(self.Ts, trajectories, xlabel='Time', ylabel='State', title='Trajectory')
+
+        fig.show()
+
+        if kwargs.get('save', False):
+            now = datetime.datetime.now().strftime("%m-%d_%H-%M")
+            true_params = kwargs.get('true_params', 'unknown')
+            save_path = kwargs.get('path', '.')
+            def _label(value):
+                if isinstance(value, str):
+                    return value
+                array = np.asarray(value)
+                if array.ndim == 0:
+                    item = array.item()
+                    try:
+                        return format(item, ".4f")
+                    except (TypeError, ValueError):
+                        return str(item)
+                return "_".join(format(item, ".4f") for item in array.reshape(-1))
+
+            save_tag = (
+                f"true_params_{_label(true_params)}__"
+                f"learned_params_{_label(params.cpu().numpy())}__"
+                f"n_iters_{n_iters}__"
+                f"method_{kwargs.get('method', 'unknown')}__"
+                f"lr_{optim.param_groups[0]['lr']}__"
+                f"time_{now}.png"
+            )
+            path = os.path.join(save_path, save_tag)
+            # os.makedirs(path, exist_ok=True)
+            fig.savefig(path, dpi=600)
 
 
     def train(self,
@@ -268,42 +311,7 @@ class SDESolver:
         params = self.sde.params.data.clone().detach()
 
         if kwargs.get('plot', False):
-            # merge trajectories and target trajectory for plotting
-            trajectories = torch.cat((trajectories, target_trajectory.unsqueeze(0)), dim=0)
-            # remove initial trajectory (iteration 0) for better visualization
-            trajectories = trajectories[1:]
-
-            fig = self.plot(self.Ts, trajectories, xlabel='Time', ylabel='State', title='Trajectory')
-
-            fig.show()
-
-            if kwargs.get('save', False):
-                now = datetime.datetime.now().strftime("%m-%d_%H-%M")
-                true_params = kwargs.get('true_params', 'unknown')
-                save_path = kwargs.get('path', '.')
-                def _label(value):
-                    if isinstance(value, str):
-                        return value
-                    array = np.asarray(value)
-                    if array.ndim == 0:
-                        item = array.item()
-                        try:
-                            return format(item, ".4f")
-                        except (TypeError, ValueError):
-                            return str(item)
-                    return "_".join(format(item, ".4f") for item in array.reshape(-1))
-
-                save_tag = (
-                    f"true_params_{_label(true_params)}__"
-                    f"learned_params_{_label(params.cpu().numpy())}__"
-                    f"n_iters_{n_iters}__"
-                    f"method_{kwargs.get('method', 'unknown')}__"
-                    f"lr_{optim.param_groups[0]['lr']}__"
-                    f"time_{now}.png"
-                )
-                path = os.path.join(save_path, save_tag)
-                # os.makedirs(path, exist_ok=True)
-                fig.savefig(path, dpi=600)
+            self.plot_fig(trajectories, target_trajectory, n_iters, optim, **kwargs)
 
         return loss_value.item(), params
 
@@ -354,6 +362,7 @@ if __name__ == "__main__":
                            device = config['training']['device'],
                            save = config['training']['save'],
                            path = config['training']['save_path'],
+                           skip_samples = config['training']['skip_samples'],
                            true_params = true_params,
                            **kwargs)
 
