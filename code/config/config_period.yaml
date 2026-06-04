@@ -1,0 +1,37 @@
+# Config file for the project
+# Follows Li et al. (2020) "Scalable Gradients for Stochastic Differential Equations"
+# Example 2: Periodic SDE
+
+# dX = - p^2 * sin(X) * cos(X)^3 dt + p * cos(X)^2 dW
+
+# Training parameters
+sde:
+  n_params : 1
+  sde_type : 'stratonovich'
+  params_sample_type : 'gaussian'
+  noise_type : 'diagonal'
+  t_span : [0, 15]
+  t_size : 100
+
+  drift : "-p**2 * torch.sin(x) * torch.cos(x)**3"
+  diffusion : "p * torch.cos(x)**2 * torch.ones_like(x) "
+
+  fixed_params : [0.2]
+
+  method : "midpoint"
+  fixed_noise : True
+  seed : 42
+
+
+training:
+  device : "cpu"
+  n_iters : 200
+  loss : "nn.MSELoss()"
+  optimizer : "torch.optim.Adam(params, lr=lr)"
+  lr : 0.02
+
+plot:
+  plot : True
+  save : True
+  save_path : "./code/img/"
+  skip_samples : 20

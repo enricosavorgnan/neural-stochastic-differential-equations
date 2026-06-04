@@ -300,7 +300,10 @@ class SDESolver:
 
             loss_value = loss(Xs, target_trajectory)
             loss_value.backward()
+
             optim.step()
+            if scheduler is not None:
+                scheduler.step()
 
             trajectories[_iter] = Xs.detach().cpu()
 
@@ -315,6 +318,33 @@ class SDESolver:
 
         return loss_value.item(), params
 
+
+
+def set_optimizer(config, parameters):
+    """
+    Instantiates the optimizer and an optional learning rate scheduler.
+    """
+    optim_name = config['training']['optimizer']
+    lr_schedule_name = config['training']['lr']  # e.g., 'constant', 'step', 'exponential'
+    base_lr = config['training']['lr_value']     # e.g., 0.01
+
+    assert optim_name in ['adam', 'sgd'], f"Invalid optimizer name: {optim_name}"
+    assert lr_schedule_name in ['constant', 'step', 'exponential'], f"Invalid learning rate schedule name: {lr_schedule_name}"
+
+    # Instantiate the optimizer
+    optim_class = torch.optim.Adam if optim_name == 'adam' else torch.optim.SGD
+    optimizer = optim_class(parameters, lr=base_lr)
+
+    # Instantiate the scheduler
+    scheduler = None
+    if lr_schedule_name == 'step':
+        # Expects kwargs like: {'step_size': 10, 'gamma': 0.1}
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, **config['training'].get('lr_params', {}))
+    elif lr_schedule_name == 'exponential':
+        # Expects kwargs like: {'gamma': 0.9}
+        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, **config['training'].get('lr_params', {}))
+
+    return optimizer, scheduler
 
 
 
@@ -348,21 +378,19 @@ if __name__ == "__main__":
 
     kwargs = get_sde_kwargs(config=config, approx=True)
     learnable_solver = SDESolver(f=f, g=g, device=device, **kwargs)
-    optimizer = eval(config['training']['optimizer'],
-                     globals=eval_namespace,
-                     locals = {"params": learnable_solver.sde.parameters(),
-                               "lr": config['training']['lr']}
-                     )
+    sde_parameters = learnable_solver.sde.parameters()
+
+    optimizer, scheduler = set_optimizer(config, sde_parameters)
 
     loss, params = learnable_solver.train(loss=loss,
                            optimizer= optimizer,
                            target_trajectory=target_Xs,
                            n_iters=config['training']['n_iters'],
-                           plot=config['training']['plot'],
                            device = config['training']['device'],
-                           save = config['training']['save'],
-                           path = config['training']['save_path'],
-                           skip_samples = config['training']['skip_samples'],
+                           plot=config['plot']['plot'],
+                           save = config['plot']['save'],
+                           path = config['plot']['save_path'],
+                           skip_samples = config['plot']['skip_samples'],
                            true_params = true_params,
                            **kwargs)
 
