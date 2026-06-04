@@ -1,0 +1,26 @@
+# Config file for the project
+# Follows Li et al. (2020) "Scalable Gradients for Stochastic Differential Equations"
+
+# Training parameters
+sde:
+  n_params : 2
+  sde_type : 'ito'
+  params_sample_type : 'gaussian'
+  noise_type : 'diagonal'
+  t_span : [0, 10]
+  t_size : 1000
+
+  drift : "-p[0] * x"
+  diffusion : "p[1] * torch.ones_like(x) "
+
+  fixed_params : [0.5, 0.5]
+
+  method : "milstein"
+  fixed_noise : False
+
+
+training:
+  n_iters : 25
+  loss : "nn.MSELoss()"
+  optimizer : "torch.optim.Adam(params, lr=lr)"
+  lr : 0.1
