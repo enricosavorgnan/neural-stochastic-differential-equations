@@ -9,8 +9,10 @@ import os
 import yaml
 import datetime
 import tqdm
+import argparse
 
 import utils
+from systems import StochasticLorenz
 
 
 class Encoder(nn.Module):
@@ -84,8 +86,10 @@ class Diffusion(nn.Module):
 
 class LatentSDE(nn.Module):
 
-    def __init__(self, input_size, latent_size, context_size, hidden_size):
+    def __init__(self, sde_type, noise_type, input_size, latent_size, context_size, hidden_size):
         super().__init__()
+        self.sde_type = sde_type
+        self.noise_type = noise_type
 
         # Core structure
         self.encoder = Encoder(input_size=input_size, hidden_size=hidden_size, output_size=context_size)
@@ -110,6 +114,7 @@ class LatentSDE(nn.Module):
 
 
     def set_context(self, context):
+        """Simply set context variable"""
         self._context = context
 
 
@@ -234,11 +239,12 @@ class LatentSDETrainer:
         self.sde_system = config['sde']['system']
         self.sde_type = config['sde']['sde_type']
         self.t_span = config['sde']['t_span']
+        self.dt = config['sde']['dt']
+        self.noise_type = config['sde']['noise_type']
         self.noise_std = config['sde']['noise_std']
         self.method = config['sde']['method']
         self.adjoint = config['sde']['adjoint']
         self.levy_area_type = config['sde']['levy_area']
-        self.dt = config['sde']['dt']
 
         self.data_size = config['model']['data_size']
         self.batch_size = config['model']['batch_size']
@@ -276,6 +282,8 @@ class LatentSDETrainer:
 
         # Define Latent SDE to optimize
         self.latent_sde = LatentSDE(
+                sde_type = self.sde_type,
+                noise_type= self.noise_type,
                 input_size = self.data_size,
                 latent_size = self.latent_size,
                 context_size = self.context_size,
@@ -295,8 +303,11 @@ class LatentSDETrainer:
         """
         _X0 = torch.randn(self.batch_size, self.data_size, device=self.device)
         ts = torch.linspace(self.t_span[0], self.t_span[1], steps=100, device=self.device)
-        X = eval(self.sde_system).sample(_X0, ts, self.noise_std, normalize=True)
-        return X, ts
+        system_class = eval(self.sde_system)
+        system = system_class()
+        X = system.sample(x0=_X0, ts=ts, noise_std=self.noise_std, normalize=True)
+
+        self.data = (X, ts)
 
 
     def configure_optimizer_scheduler(self):
@@ -327,7 +338,7 @@ class LatentSDETrainer:
             self.kl_scheduler = lambda step: 1.0
 
 
-    def train(self, data):
+    def train(self):
         """
         Train method
         """
@@ -414,5 +425,9 @@ class LatentSDETrainer:
 
 
 if __name__ == "__main__":
-    sde = LatentSDE()
+    parser = argparse.ArgumentParser(description="Latent SDE Model")
+    parser.add_argument("--config", type=str, default="./code/config/config.yaml", help="Path to the configuration YAML file")
+    args = parser.parse_args()
+
+    sde = LatentSDETrainer(config_path=args.config)
     sde.train()
