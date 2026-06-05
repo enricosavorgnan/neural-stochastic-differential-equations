@@ -120,7 +120,28 @@ class LatentSDE(nn.Module):
     def f(self, t, x):
         ts, context = self._context
         idx = torch.min(torch.searchsorted(ts, t, right=True), len(ts)-1)
-        return self.drift_posterior(torch.cat((x, context[idx]), dim=1))
+        #Interpolation of the context vector at time t
+        if idx == 0:
+            # t is exactly at or before the first timestamp
+            interp_ctx = context[0]
+        elif idx == len(ts):
+            # t is exactly at or after the last timestamp
+            interp_ctx = context[-1]
+        else:
+            # Extract bounding timestamps
+            t0 = ts[idx - 1]
+            t1 = ts[idx]
+
+            # Extract bounding context vectors
+            ctx0 = context[idx - 1]
+            ctx1 = context[idx]
+
+            # Calculate the interpolation weight (alpha in [0, 1])
+            alpha = (t - t0) / (t1 - t0)
+
+            # Blend the context vectors
+            interp_ctx = ctx0 + alpha * (ctx1 - ctx0)
+        return self.drift_posterior(torch.cat((x, interp_ctx), dim=1))
 
     def h(self, t, x):
         return self.drift_prior(x)
@@ -297,6 +318,9 @@ class LatentSDETrainer:
         """
         Train method
         """
+        # Setting time for future savings
+        now = datetime.datetime.now().strftime("%m-%d_%H-%M")
+
         # Retrieve data
         X, ts = self.data
 
@@ -316,6 +340,8 @@ class LatentSDETrainer:
             log_p_X, kl = self.latent_sde(X, ts, noise_std = self.noise_std, adjoint = self.adjoint, method = self.method, dt = self.dt)
 
             loss = - log_p_X + kl * self.kl_scheduler
+            if torch.isnan(loss):
+                break
             loss.backward()
 
             self.optimizer.step()
@@ -324,8 +350,9 @@ class LatentSDETrainer:
 
             if iteration % self.pause_every == 0:
                 print(f"Iter: {iteration}/{self.n_iters}, \tLoss: {loss.item():.4f}, \tLog p(X): {log_p_X.item():.4f}, \tKL: {kl.item():.4f}")
+                # store checkpoint
+                self.model_saver(time=now, checkpoint=True, iteration=iteration)
 
-        now = datetime.datetime.now().strftime("%m-%d_%H-%M")
         if self.save_data:
             self.data_saver(time=now)
         if self.save_model:
@@ -348,13 +375,16 @@ class LatentSDETrainer:
             utils.plot_3d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
 
 
-    def model_saver(self, time):
+    def model_saver(self, time, checkpoint : bool = False, iteration=None):
         """
         Saves the model to the specified path.
         The model is saved with the name: sde_{sde_name}_time_{time}.pt
         """
         os.makedirs(self.model_path, exist_ok=True)
-        model_save_path = os.path.join(self.model_path, f"sde_{self.sde_name}_time_{time}.pt")
+        if checkpoint:
+            model_save_path = os.path.join(self.model_path, f"sde_{self.sde_name}_time_{time}_iter_{iteration}/{self.n_iters}.pt")
+        else:
+            model_save_path = os.path.join(self.model_path, f"sde_{self.sde_name}_time_{time}.pt")
         torch.save(self.latent_sde.state_dict(), model_save_path)
         print(f"Model saved at: {model_save_path}")
 
