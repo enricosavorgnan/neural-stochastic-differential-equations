@@ -1,5 +1,6 @@
-import numpy as np
-import matplotlib.pyplot as plt
+"""
+This file contains the implementation of the Latent SDE model and its training loop.
+"""
 import torch
 import torch.nn as nn
 import torchsde
@@ -7,8 +8,6 @@ import torchsde
 import os
 import yaml
 import datetime
-
-from typing import Callable, Sequence, Optional
 import tqdm
 
 import utils
@@ -91,9 +90,12 @@ class LatentSDE(nn.Module):
         # Core structure
         self.encoder = Encoder(input_size=input_size, hidden_size=hidden_size, output_size=context_size)
 
-        self.drift_posterior = Drift(layer_numbers=3, layer_sizes=[latent_size+context_size, hidden_size, hidden_size, latent_size])
-        self.drift_prior = Drift(layer_numbers=3, layer_sizes=[latent_size, hidden_size, hidden_size, latent_size])
-        self.diffusion = Diffusion(layer_numbers = latent_size, layer_sizes=[[1, hidden_size, 1] for _ in range(latent_size)])
+        self.drift_posterior = Drift(layer_numbers=3,
+                                     layer_sizes=[latent_size+context_size, hidden_size, hidden_size, latent_size])
+        self.drift_prior = Drift(layer_numbers=3,
+                                 layer_sizes=[latent_size, hidden_size, hidden_size, latent_size])
+        self.diffusion = Diffusion(layer_numbers = latent_size,
+                                   layer_sizes=[[1, hidden_size, 1] for _ in range(latent_size)])
 
         self.decoder = Decoder(input_size=latent_size, hidden_size=hidden_size, output_size=input_size)
 
@@ -173,7 +175,13 @@ class LatentSDE(nn.Module):
                     tuple(self.drift_prior.parameters()) +
                     tuple(self.diffusion.parameters())
                 )
-            Z, log_ratio = torchsde.sdeint_adjoint(sde=self, y0=z0, ts=ts, adjoint_params=params, dt=dt, logqp=True, method=method)
+            Z, log_ratio = torchsde.sdeint_adjoint(sde=self,
+                                                   y0=z0,
+                                                   ts=ts,
+                                                   adjoint_params=params,
+                                                   dt=dt,
+                                                   logqp=True,
+                                                   method=method)
         else:
             Z, log_ratio = torchsde.sdeint(sde=self, y0=z0, ts=ts, dt=dt, logqp=True, method=method)
 
@@ -192,11 +200,16 @@ class LatentSDE(nn.Module):
         return log_p_X, kl + path
 
 
-    def sample(self, batch_size, ts, brownian_motion=None, **kwargs):
+    def sample(self, batch_size, ts, brownian_motion=None, dt=0.01):
         epsilon = torch.randn(size=(batch_size, *self.pz0_mean.shape[1:]), device=self.pz0_mean.device)
         z0 = self.pz0_mean + self.pz0_log_std.exp() * epsilon
 
-        Z = torchsde.sdeint(sde=self, y0 = z0, ts=ts, bm=brownian_motion, names={'drift': 'h'}, dt=kwargs.get('dt', 1e-2))
+        Z = torchsde.sdeint(sde=self,
+                            y0 = z0,
+                            ts=ts,
+                            bm=brownian_motion,
+                            names={'drift': 'h'},
+                            dt=dt)
         X = self.decoder(Z)
         return X
 
@@ -365,7 +378,7 @@ class LatentSDETrainer:
         """
         Plots the trajectories of the data and the samples from the trained SDE, and saves the plot to the specified path.
         """
-        samples = self.latent_sde.sample(batch_size=data.size(1), ts=ts, bm=bm).cpu().numpy()
+        samples = self.latent_sde.sample(batch_size=data.size(1), ts=ts, brownian_motion=bm, dt=self.dt).cpu().numpy()
 
         if self.plot_dim == 1:
             utils.plot_1d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
