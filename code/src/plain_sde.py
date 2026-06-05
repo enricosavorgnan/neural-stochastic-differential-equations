@@ -20,6 +20,8 @@ from utils import get_sde_kwargs
 
 
 
+global VERBOSE
+
 
 
 class SDE(nn.Module):
@@ -206,7 +208,8 @@ class SDESolver:
         fig = plt.figure(dpi=600)
         for i, sample in enumerate(samples):
             label = 'Target' if i == len(samples) - 1 else f'Iteration {i}'
-            plt.plot(ts, sample, marker='x', label=label)
+            # set size
+            plt.plot(ts, sample, marker='o', label=label, markersize=2)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.title(title)
@@ -215,7 +218,7 @@ class SDESolver:
         return fig
 
 
-    def plot_fig(self, trajectories, target_trajectory, n_iters, optim, **kwargs):
+    def plot_fig(self, params, trajectories, target_trajectory, n_iters, optim, **kwargs):
         # merge trajectories and target trajectory for plotting
         trajectories = torch.cat((trajectories, target_trajectory.unsqueeze(0)), dim=0)
         # remove initial trajectory (iteration 0) for better visualization
@@ -314,7 +317,7 @@ class SDESolver:
         params = self.sde.params.data.clone().detach()
 
         if kwargs.get('plot', False):
-            self.plot_fig(trajectories, target_trajectory, n_iters, optim, **kwargs)
+            self.plot_fig(params, trajectories, target_trajectory, n_iters, optim, **kwargs)
 
         return loss_value.item(), params
 
@@ -351,35 +354,60 @@ def set_optimizer(config, parameters):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="SDE Experiment")
     parser.add_argument('--config', type=str, default='config.yaml', help='Path to the configuration file')
+    parser.add_argument('--verbose', default='False', help='Print detailed information during execution')
     args = parser.parse_args()
 
+    # update verbosity flag
+    VERBOSE = True if args.verbose else False
 
+    # open config file
     with open(args.config, 'r') as f:
         config = yaml.safe_load(f)
+    if VERBOSE:
+        print("Configuration:")
+        print(yaml.dump(config, default_flow_style=False))
 
-
+    # set drift, diffusion, loss and device from config
     eval_namespace = {"torch": torch, "nn": nn}
     f = eval("lambda t,x,p: " + config['sde']['drift'], eval_namespace)
     g = eval("lambda t,x,p: " + config['sde']['diffusion'], eval_namespace)
     loss = eval(config['training']['loss'], eval_namespace)
     device = config['training']['device']
+    if VERBOSE:
+        print(f"Drift function: {config['sde']['drift']}")
+        print(f"Diffusion function: {config['sde']['diffusion']}")
+        print(f"Loss function: {config['training']['loss']}")
+        print(f"Device: {device}")
 
+
+    # -------------------------------
+    # 1. True Solution and Parameters
+    # -------------------------------
+
+    # Set kwargs
     kwargs = get_sde_kwargs(config=config, approx=False)
+
+    # Compute trajectory and true parameters using an SDE solver
     sde_solver = SDESolver(**kwargs)
-
-
     true_solver = SDESolver(f=f, g=g, **kwargs)
+
     with torch.no_grad():
         target_Xs = true_solver.trajectory(adjoint=False, method = config['sde']['method'])
     true_params = true_solver.sde.params.data.clone().detach()
-    # print(f" Target Trajectory: {target_Xs.squeeze().cpu().numpy()} \t True Params: {true_params}")
-    # print("\nStarting Optimization via Stochastic Adjoint Method...")
 
+    if VERBOSE:
+        print(f" Target Trajectory: {target_Xs.squeeze().cpu().numpy()} \t True Params: {true_params}")
+
+
+
+    # -------------------------------
+    # 2. Learnable SDE and Training
+    # -------------------------------
 
     kwargs = get_sde_kwargs(config=config, approx=True)
     learnable_solver = SDESolver(f=f, g=g, device=device, **kwargs)
     sde_parameters = learnable_solver.sde.parameters()
-
+    # define optimizer and scheduler
     optimizer, scheduler = set_optimizer(config, sde_parameters)
 
     loss, params = learnable_solver.train(loss=loss,
@@ -394,7 +422,8 @@ if __name__ == "__main__":
                            true_params = true_params,
                            **kwargs)
 
-    print(f"\nFinal Loss: {loss:.4f}, \t Final Params: {params.cpu().numpy()} \t True Params: {true_params}")
+    if VERBOSE:
+        print(f"\nFinal Loss: {loss:.4f}, \t Final Params: {params.cpu().numpy()} \t True Params: {true_params}")
 
 
 

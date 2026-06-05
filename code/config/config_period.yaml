@@ -27,8 +27,13 @@ training:
   device : "cpu"
   n_iters : 200
   loss : "nn.MSELoss()"
-  optimizer : "torch.optim.Adam(params, lr=lr)"
-  lr : 0.02
+  optimizer: "adam"            # accepted are "adam", "sgd"
+  lr: "step"                   # accepted are "constant", "step", "exponential"
+  lr_params: {
+    "step_size": 1,
+    "gamma": 0.99
+  }
+  lr_value: 0.1
 
 plot:
   plot : True

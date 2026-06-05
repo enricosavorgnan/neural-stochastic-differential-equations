@@ -3,7 +3,7 @@
 
 # Example 2: Ornstein-Uhlenbeck SDE
 
-# dX = - p[0] * X dt + p[1] * dW
+# dX = (p[1] / sqrt(1+t) - 1/(2 + 2*t)*X) dt + p[0]*p[1] / sqrt(1+t) dW
 
 # Training parameters
 sde:
@@ -14,8 +14,8 @@ sde:
   t_span : [0, 15]
   t_size : 100
 
-  drift : "-p[0] * x"
-  diffusion : "p[1] * torch.ones_like(x) "
+  drift : "p[1] / torch.sqrt(1+t) - 1/(2 + 2*t)*x"
+  diffusion : "p[0] * p[1] / torch.sqrt(1+t) * torch.ones_like(x) "
 
   fixed_params : [0.5, 0.1]
 
@@ -26,7 +26,7 @@ sde:
 
 training:
   device : "cpu"
-  n_iters : 2
+  n_iters : 200
   loss : "nn.MSELoss()"
   optimizer : "adam"            # accepted are "adam", "sgd"
   lr : "step"                   # accepted are "constant", "step", "exponential"
