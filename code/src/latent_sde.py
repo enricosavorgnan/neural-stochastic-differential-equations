@@ -54,11 +54,19 @@ class Drift(nn.Module):
         super().__init__()
 
         # Layers: sequence of linear + softplus for n-1 layers, and finally a linear layer for the last layer
-        self.layers = []
-        for i in range(layer_numbers - 1):
-            self.layers.append(nn.Linear(layer_sizes[i], layer_sizes[i+1]))
-            self.layers.append(nn.Softplus())
+        self.layers = nn.ModuleList([
+            nn.Sequential(
+                nn.Linear(layer_sizes[i], layer_sizes[i+1]),
+            nn.Softplus()) for i in range(layer_numbers-1)
+        ])
+        # append last layer without softplus
         self.layers.append(nn.Linear(layer_sizes[-2], layer_sizes[-1]))
+
+
+    def forward(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
 
 
 
@@ -75,12 +83,18 @@ class Diffusion(nn.Module):
                 nn.Linear(layer_sizes[i][1], layer_sizes[i][2]),
                 nn.Sigmoid()
             )
-            for i in range(layer_numbers - 1)
+            for i in range(layer_numbers)
         ])
 
-    # define an iterable to iterate through the layers
+
     def __iter__(self):
         return iter(self.layers)
+
+
+    def forward(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
 
 
 
@@ -126,7 +140,7 @@ class LatentSDE(nn.Module):
 
     def f(self, t, x):
         ts, context = self._context
-        idx = torch.min(torch.searchsorted(ts, t, right=True), len(ts)-1)
+        idx = torch.min(torch.searchsorted(ts, t, right=True)).item()
         #Interpolation of the context vector at time t
         if idx == 0:
             # t is exactly at or before the first timestamp
@@ -363,14 +377,14 @@ class LatentSDETrainer:
             self.latent_sde.zero_grad()
             log_p_X, kl = self.latent_sde(X, ts, noise_std = self.noise_std, adjoint = self.adjoint, method = self.method, dt = self.dt)
 
-            loss = - log_p_X + kl * self.kl_scheduler
+            loss = - log_p_X + kl * self.kl_scheduler(iteration)
             if torch.isnan(loss):
-                break
+                raise ValueError(f"Loss became NaN at iteration {iteration}. log_p_X: {log_p_X.item()}, kl: {kl.item()}")
             loss.backward()
 
             self.optimizer.step()
             self.lr_scheduler.step()
-            self.kl_scheduler.step()
+            # self.kl_scheduler.step()
 
             if iteration % self.pause_every == 0:
                 print(f"Iter: {iteration}/{self.n_iters}, \tLoss: {loss.item():.4f}, \tLog p(X): {log_p_X.item():.4f}, \tKL: {kl.item():.4f}")
@@ -389,7 +403,8 @@ class LatentSDETrainer:
         """
         Plots the trajectories of the data and the samples from the trained SDE, and saves the plot to the specified path.
         """
-        samples = self.latent_sde.sample(batch_size=data.size(1), ts=ts, brownian_motion=bm, dt=self.dt).cpu().numpy()
+        with torch.no_grad():
+            samples = self.latent_sde.sample(batch_size=data.size(1), ts=ts, brownian_motion=bm, dt=self.dt).detach().cpu().numpy()
 
         if self.plot_dim == 1:
             utils.plot_1d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)

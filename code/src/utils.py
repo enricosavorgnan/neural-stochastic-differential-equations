@@ -116,8 +116,9 @@ def plot_3d_latent_sde(X_data, X_samples, plot_path, time, ts, name):
 
     # Left plot: data.
     z1, z2, z3 = np.split(X_data.cpu().numpy(), indices_or_sections=3, axis=-1)
-    [ax0.plot(z1[:, i, 0], z2[:, i, 0], z3[:, i, 0]) for i in range(len(X_samples))]
-    ax0.scatter(z1[0, :len(X_samples), 0], z2[0, :len(X_samples), 0], z3[0, :10, 0], marker='x')
+
+    [ax0.plot(z1[:, i, 0], z2[:, i, 0], z3[:, i, 0]) for i in range(X_samples.shape[1])]
+    ax0.scatter(z1[0, :X_samples.shape[1], 0], z2[0, :X_samples.shape[1], 0], z3[0, :X_samples.shape[1], 0], marker='x')
     ax0.set_yticklabels([])
     ax0.set_xticklabels([])
     ax0.set_zticklabels([])
@@ -133,8 +134,8 @@ def plot_3d_latent_sde(X_data, X_samples, plot_path, time, ts, name):
     # Right plot: samples from learned model.
     z1, z2, z3 = np.split(X_samples, indices_or_sections=3, axis=-1)
 
-    [ax1.plot(z1[:, i, 0], z2[:, i, 0], z3[:, i, 0]) for i in range(len(X_samples))]
-    ax1.scatter(z1[0, :len(X_samples), 0], z2[0, :len(X_samples), 0], z3[0, :10, 0], marker='x')
+    [ax1.plot(z1[:, i, 0], z2[:, i, 0], z3[:, i, 0]) for i in range(X_samples.shape[1])]
+    ax1.scatter(z1[0, :X_samples.shape[1], 0], z2[0, :X_samples.shape[1], 0], z3[0, :X_samples.shape[1], 0], marker='x')
     ax1.set_yticklabels([])
     ax1.set_xticklabels([])
     ax1.set_zticklabels([])
