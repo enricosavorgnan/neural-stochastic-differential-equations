@@ -44,7 +44,6 @@ save:
   plot : True
   data : True
   n_samples : 2
-  plot_dim : 3
 
 path:
   data : "./code/data/"
