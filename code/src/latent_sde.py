@@ -100,10 +100,11 @@ class Diffusion(nn.Module):
 
 class LatentSDE(nn.Module):
 
-    def __init__(self, sde_type, noise_type, input_size, latent_size, context_size, hidden_size):
+    def __init__(self, sde_type, noise_type, method, input_size, latent_size, context_size, hidden_size):
         super().__init__()
         self.sde_type = sde_type
         self.noise_type = noise_type
+        self.method = method
 
         # Core structure
         self.encoder = Encoder(input_size=input_size, hidden_size=hidden_size, output_size=context_size)
@@ -141,28 +142,32 @@ class LatentSDE(nn.Module):
     def f(self, t, x):
         ts, context = self._context
         idx = torch.min(torch.searchsorted(ts, t, right=True)).item()
-        #Interpolation of the context vector at time t
-        if idx == 0:
-            # t is exactly at or before the first timestamp
-            interp_ctx = context[0]
-        elif idx == len(ts):
-            # t is exactly at or after the last timestamp
-            interp_ctx = context[-1]
+        if not self.method == 'euler':
+            # Interpolation of the context vector at time t
+            if idx == 0:
+                # t is exactly at or before the first timestamp
+                interp_ctx = context[0]
+            elif idx == len(ts):
+                # t is exactly at or after the last timestamp
+                interp_ctx = context[-1]
+            else:
+                # Extract bounding timestamps
+                t0 = ts[idx - 1]
+                t1 = ts[idx]
+
+                # Extract bounding context vectors
+                ctx0 = context[idx - 1]
+                ctx1 = context[idx]
+
+                # Calculate the interpolation weight (alpha in [0, 1])
+                alpha = (t - t0) / (t1 - t0)
+
+                # Blend the context vectors
+                interp_ctx = ctx0 + alpha * (ctx1 - ctx0)
+            return self.drift_posterior(torch.cat((x, interp_ctx), dim=1))
         else:
-            # Extract bounding timestamps
-            t0 = ts[idx - 1]
-            t1 = ts[idx]
-
-            # Extract bounding context vectors
-            ctx0 = context[idx - 1]
-            ctx1 = context[idx]
-
-            # Calculate the interpolation weight (alpha in [0, 1])
-            alpha = (t - t0) / (t1 - t0)
-
-            # Blend the context vectors
-            interp_ctx = ctx0 + alpha * (ctx1 - ctx0)
-        return self.drift_posterior(torch.cat((x, interp_ctx), dim=1))
+            # If using Euler method, we can directly use the context at the closest timestamp without interpolation
+            return self.drift_posterior(torch.cat((x, context[idx-1]), dim=1))
 
     def h(self, t, x):
         return self.drift_prior(x)
@@ -170,7 +175,7 @@ class LatentSDE(nn.Module):
     def g(self, t, x):
         x = torch.split(x, split_size_or_sections=1, dim = 1)
         x = [diff(x_i) for (diff, x_i) in zip(self.diffusion, x)]
-        return torch.cat(x, dim=1)
+        return torch.cat(x, dim=1) + 1e-4
 
 
     def forward(self, X, ts, noise_std, adjoint : bool = False, method : str = 'euler', dt : float = 0.01):
@@ -260,11 +265,11 @@ class LatentSDETrainer:
         self.adjoint = config['sde']['adjoint']
         self.levy_area_type = config['sde']['levy_area']
 
-        self.data_size = config['model']['data_size']
-        self.batch_size = config['model']['batch_size']
-        self.latent_size = config['model']['latent_size']
-        self.context_size = config['model']['context_size']
-        self.hidden_size = config['model']['hidden_size']
+        self.data_size = config['size']['data_size']
+        self.batch_size = config['size']['batch_size']
+        self.latent_size = config['size']['latent_size']
+        self.context_size = config['size']['context_size']
+        self.hidden_size = config['size']['hidden_size']
 
         self.n_iters = config['training']['n_iters']
         self.device = config['training']['device']
@@ -289,26 +294,59 @@ class LatentSDETrainer:
         self.plot_path = config['path']['plot']
 
         self.data = config.get('data', None)
+        self.model = config.get('model', None)
 
         # Generate Data
         if not self.data:
             self.generate_data()
+        else:
+            self.load_data()
 
         # Define Latent SDE to optimize
         self.latent_sde = LatentSDE(
                 sde_type = self.sde_type,
                 noise_type= self.noise_type,
+                method = self.method,
                 input_size = self.data_size,
                 latent_size = self.latent_size,
                 context_size = self.context_size,
                 hidden_size = self.hidden_size
             ).to(self.device)
+        if self.model:
+            self.load_model()
 
         # Instantiate Optimizer and Scheduler for Learning Rate and KL Divergence
         self.lr_scheduler = None
         self.optimizer = None
         self.kl_scheduler = None
         self.configure_optimizer_scheduler()
+
+
+    def load_model(self):
+        """
+        Loads the model from the specified path in self.model.
+        The model is expected to be a state_dict of the LatentSDE class.
+        """
+        if not os.path.isfile(self.model):
+            print(f"Model file: \n{self.model}\n not found. \nExiting.")
+            exit(1)
+
+        model_state_dict = torch.load(self.model, map_location=self.device)
+        self.latent_sde.load_state_dict(model_state_dict)
+        print(f"Model loaded from: {self.model}")
+
+
+    def load_data(self):
+        """
+        Loads the data from the specified path in self.data.
+        The data is expected to be a tuple of (X, ts) where X is the trajectory data and ts are the time steps.
+        """
+        if not os.path.isfile(self.data):
+            print(f"Data file: \n{self.data}\n not found. \nExiting.")
+            exit(1)
+
+        self.data = torch.load(self.data, map_location=self.device)
+        print(f"Data loaded from: {self.data}")
 
 
     def generate_data(self):
@@ -322,6 +360,21 @@ class LatentSDETrainer:
         X = system.sample(x0=_X0, ts=ts, noise_std=self.noise_std, normalize=True)
 
         self.data = (X, ts)
+
+
+    def generate_brownian_motion(self):
+        """
+        Generates a sample of Brownian motion with the same time steps and batch size as the data, and stores it in self.brownian_motion.
+        This is used for visualization purposes.
+        """
+        brownian_motion = torchsde.BrownianInterval(
+            t0 = self.t_span[0],
+            t1 = self.t_span[1],
+            size = (self.batch_size, self.latent_size,),
+            device = self.device,
+            levy_area_approximation = self.levy_area_type
+        )
+        return brownian_motion
 
 
     def configure_optimizer_scheduler(self):
@@ -352,6 +405,54 @@ class LatentSDETrainer:
             self.kl_scheduler = lambda step: 1.0
 
 
+    def plot_saver(self, bm, time, data, ts):
+        """
+        Plots the trajectories of the data and the samples from the trained SDE, and saves the plot to the specified path.
+        """
+        with torch.no_grad():
+            samples = self.latent_sde.sample(batch_size=self.batch_size, ts=ts, brownian_motion=bm, dt=self.dt).detach().cpu().numpy()
+
+        if self.plot_dim == 1:
+            utils.plot_1d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
+        elif self.plot_dim == 2:
+            utils.plot_2d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
+        else:
+            utils.plot_3d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
+
+
+    def model_saver(self, time, checkpoint : bool = False, iteration=None):
+        """
+        Saves the model to the specified path.
+        The model is saved with the name: sde_{sde_name}_time_{time}.pt
+        """
+        os.makedirs(self.model_path, exist_ok=True)
+        if checkpoint:
+            model_save_path = os.path.join(self.model_path, f"sde_{self.sde_name}_time_{time}_iter_{iteration}-{self.n_iters}.pt")
+        else:
+            model_save_path = os.path.join(self.model_path, f"sde_{self.sde_name}_time_{time}.pt")
+        torch.save(self.latent_sde.state_dict(), model_save_path)
+        print(f"Model saved at: {model_save_path}")
+
+
+    def data_saver(self, time):
+        """
+        Saves the data to the specified path.
+        """
+        os.makedirs(self.data_path, exist_ok=True)
+        data_save_path = os.path.join(self.data_path, f"data_{self.sde_name}_time_{time}.pt")
+        torch.save(self.data, data_save_path)
+        print(f"Data saved at: {data_save_path}")
+
+
+    def plot(self):
+        """
+        Plots the trajectories of the data and the samples from the trained SDE, and saves the plot to the specified path.
+        """
+        bm = self.generate_brownian_motion()
+
+        self.plot_saver(bm=bm, time=datetime.datetime.now().strftime("%m-%d_%H-%M"), data=self.data[0], ts=self.data[1])
+
+
     def train(self):
         """
         Train method
@@ -364,13 +465,7 @@ class LatentSDETrainer:
 
         # Sample a brownian motion
         # Just for visualization
-        brownian_motion = torchsde.BrownianInterval(
-            t0 = self.t_span[0],
-            t1 = self.t_span[1],
-            size = (self.batch_size, self.latent_size,),
-            device = self.device,
-            levy_area_approximation = self.levy_area_type
-        )
+        brownian_motion = self.generate_brownian_motion()
 
         # Start training
         for iteration in tqdm.tqdm(range(1, self.n_iters+1)):
@@ -378,10 +473,10 @@ class LatentSDETrainer:
             log_p_X, kl = self.latent_sde(X, ts, noise_std = self.noise_std, adjoint = self.adjoint, method = self.method, dt = self.dt)
 
             loss = - log_p_X + kl * self.kl_scheduler(iteration)
-            if torch.isnan(loss):
-                raise ValueError(f"Loss became NaN at iteration {iteration}. log_p_X: {log_p_X.item()}, kl: {kl.item()}")
+
             loss.backward()
 
+            torch.nn.utils.clip_grad_norm_(self.latent_sde.parameters(), max_norm=1.0)
             self.optimizer.step()
             self.lr_scheduler.step()
             # self.kl_scheduler.step()
@@ -399,43 +494,7 @@ class LatentSDETrainer:
             self.plot_saver(bm=brownian_motion, time=now, data=X, ts=ts)
 
 
-    def plot_saver(self, bm, time, data, ts):
-        """
-        Plots the trajectories of the data and the samples from the trained SDE, and saves the plot to the specified path.
-        """
-        with torch.no_grad():
-            samples = self.latent_sde.sample(batch_size=data.size(1), ts=ts, brownian_motion=bm, dt=self.dt).detach().cpu().numpy()
 
-        if self.plot_dim == 1:
-            utils.plot_1d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
-        elif self.plot_dim == 2:
-            utils.plot_2d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
-        else:
-            utils.plot_3d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
-
-
-    def model_saver(self, time, checkpoint : bool = False, iteration=None):
-        """
-        Saves the model to the specified path.
-        The model is saved with the name: sde_{sde_name}_time_{time}.pt
-        """
-        os.makedirs(self.model_path, exist_ok=True)
-        if checkpoint:
-            model_save_path = os.path.join(self.model_path, f"sde_{self.sde_name}_time_{time}_iter_{iteration}/{self.n_iters}.pt")
-        else:
-            model_save_path = os.path.join(self.model_path, f"sde_{self.sde_name}_time_{time}.pt")
-        torch.save(self.latent_sde.state_dict(), model_save_path)
-        print(f"Model saved at: {model_save_path}")
-
-
-    def data_saver(self, time):
-        """
-        Saves the data to the specified path.
-        """
-        os.makedirs(self.data_path, exist_ok=True)
-        data_save_path = os.path.join(self.data_path, f"data_{self.sde_name}_time_{time}.pt")
-        torch.save(self.data, data_save_path)
-        print(f"Data saved at: {data_save_path}")
 
 
 
@@ -445,4 +504,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     sde = LatentSDETrainer(config_path=args.config)
-    sde.train()
+    # sde.train()
+    sde.plot()

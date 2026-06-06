@@ -1,3 +1,5 @@
+model : "./code/models/sde_lorenz_time_06-05_18-24_iter_200-200.pt"
+
 sde :
   name : lorenz
   system : StochasticLorenz
@@ -13,23 +15,23 @@ sde :
   levy_area : 'space-time'
 
 
-model :
+size :
   data_size : 3
-  batch_size : 32
+  batch_size : 1024
   latent_size : 4
   context_size : 64
   hidden_size : 128
 
 
 training :
-  n_iters : 20
+  n_iters : 200
   pause : 2
   device : cpu
   optimizer : adam
 
   lr_scheduler : exponential
-  lr_init : 0.1
-  lr_gamma : 0.95
+  lr_init : 0.01
+  lr_gamma : 0.997
   lr_step_size : 2
 
   kl_scheduler : linear
@@ -41,7 +43,7 @@ save:
   model_every : 2
   plot : True
   data : True
-  n_samples : 20
+  n_samples : 2
   plot_dim : 3
 
 path:
