@@ -12,7 +12,7 @@ import tqdm
 import argparse
 
 import utils
-from systems import StochasticLorenz
+from systems import StochasticLorenz, ClimateModel
 
 
 class Encoder(nn.Module):
@@ -142,6 +142,10 @@ class LatentSDE(nn.Module):
     def f(self, t, x):
         ts, context = self._context
         idx = torch.min(torch.searchsorted(ts, t, right=True)).item()
+
+        # Continuous methods require something stronger than just taking one extreme.
+        # Here the solution is a classical interpolation.
+        # N.B.: interpolation slows the process (around 0.5x)!
         if not self.method == 'euler':
             # Interpolation of the context vector at time t
             if idx == 0:
@@ -170,9 +174,11 @@ class LatentSDE(nn.Module):
             return self.drift_posterior(torch.cat((x, context[idx-1]), dim=1))
 
     def h(self, t, x):
+        """Simply cross the layer"""
         return self.drift_prior(x)
 
     def g(self, t, x):
+        """Cross the layer, but element-wise, ensuring diagonal noise"""
         x = torch.split(x, split_size_or_sections=1, dim = 1)
         x = [diff(x_i) for (diff, x_i) in zip(self.diffusion, x)]
         return torch.cat(x, dim=1) + 1e-4
@@ -287,7 +293,6 @@ class LatentSDETrainer:
         self.save_plot = config['save']['plot']
         self.save_data = config['save']['data']
         self.n_samples = config['save']['n_samples']
-        self.plot_dim = config['save']['plot_dim']
 
         self.data_path = config['path']['data']
         self.model_path = config['path']['model']
@@ -412,9 +417,9 @@ class LatentSDETrainer:
         with torch.no_grad():
             samples = self.latent_sde.sample(batch_size=self.batch_size, ts=ts, brownian_motion=bm, dt=self.dt).detach().cpu().numpy()
 
-        if self.plot_dim == 1:
-            utils.plot_1d_lateWhynt_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
-        elif self.plot_dim == 2:
+        if self.data_size == 1:
+            utils.plot_1d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
+        elif self.data_size == 2:
             utils.plot_2d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
         else:
             utils.plot_3d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
