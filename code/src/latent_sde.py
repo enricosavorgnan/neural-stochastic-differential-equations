@@ -413,11 +413,11 @@ class LatentSDETrainer:
             samples = self.latent_sde.sample(batch_size=self.batch_size, ts=ts, brownian_motion=bm, dt=self.dt).detach().cpu().numpy()
 
         if self.plot_dim == 1:
-            utils.plot_1d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
+            utils.plot_1d_lateWhynt_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
         elif self.plot_dim == 2:
-            utils.plot_2d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
+            utils.plot_2d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
         else:
-            utils.plot_3d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name)
+            utils.plot_3d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
 
 
     def model_saver(self, time, checkpoint : bool = False, iteration=None):
@@ -492,9 +492,6 @@ class LatentSDETrainer:
             self.model_saver(time=now)
         if self.save_plot:
             self.plot_saver(bm=brownian_motion, time=now, data=X, ts=ts)
-
-
-
 
 
 
