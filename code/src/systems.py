@@ -47,3 +47,40 @@ class StochasticLorenz:
             mean, std = torch.mean(X, dim=(0, 1)), torch.std(X, dim=(0, 1))
             X.sub_(mean).div_(std).add_(torch.randn_like(X) * noise_std)
         return X
+
+
+
+class ClimateModel:
+    """
+    Climate Model SDE, following Benzi, Sutera, Vulpiani, Parisi, A Theory of Stochastic Resonance in Climatic Change, 1983:
+
+        dX = (aX - X^3 + b*cos(omega*t))dt + epsilon*dW
+
+    Parameters values from the same paper
+    """
+    noise_type = "diagonal"
+    sde_type = "ito"
+
+    def __init__(self, a : float = 1, b : float = 0.1, omega : float = 0.01, epsilon : float = 0.35):
+        self.a = a
+        self.b = b
+        self.omega = omega
+        self.eps = epsilon
+
+    def f(self, t, x):
+        drift = self.a*x - x**3 + self.b*torch.cos(self.omega*t)
+        return drift
+
+    def g(self, t, x):
+        # map self.eps to the same shape as x
+        self.eps *= torch.ones_like(x)
+        return self.eps
+
+    @torch.no_grad()
+    def sample(self, x0, ts, noise_std, normalize):
+        # map x0, ts from points to
+        X = torchsde.sdeint(self, x0, ts)
+        if normalize:
+            mean, std = torch.mean(X), torch.std(X)
+            X.sub_(mean).div_(std).add_(torch.randn_like(X) * noise_std)
+        return X

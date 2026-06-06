@@ -42,15 +42,11 @@ def plot_1d_latent_sde(X_data, X_samples, plot_path, time, ts, name, n_samples):
     Plots 1D trajectories of the data and the samples from the trained SDE.
     The X-axis represents Time (t), and the Y-axis represents the state value (X_1).
     """
-    fig = plt.figure(figsize=(20, 9))
+    fig = plt.figure(figsize=(20, 9), dpi=600)
     grid = gs.GridSpec(1, 2)
 
-    # 1D plots use standard 2D axes, so no `projection='3d'` is needed
     ax0 = fig.add_subplot(grid[0, 0])
     ax1 = fig.add_subplot(grid[0, 1])
-
-    # Safely clamp the number of trajectories to the actual batch size
-    actual_samples = min(n_samples, X_data.shape[1])
 
     # Convert the time tensor to a numpy array for the X-axis
     t_np = ts.cpu().numpy()
@@ -61,11 +57,10 @@ def plot_1d_latent_sde(X_data, X_samples, plot_path, time, ts, name, n_samples):
     data_np = X_data.cpu().numpy()
 
     # Plot trajectories (Time vs State)
-    [ax0.plot(t_np, data_np[:, i, 0], alpha=0.8) for i in range(actual_samples)]
+    [ax0.plot(t_np, data_np[:, i, 0], alpha=0.8) for i in range(X_data.shape[1])]
 
     # Scatter the initial starting points (t=0)
-    # We use np.repeat to create a time coordinate array [t[0], t[0], ...] matching the sample size
-    ax0.scatter(np.repeat(t_np[0], actual_samples), data_np[0, :actual_samples, 0],
+    ax0.scatter(np.repeat(t_np[0],  X_data.shape[1]), data_np[0, : X_data.shape[1], 0],
                 marker='x', color='black', s=50, zorder=5)
 
     ax0.set_xlabel('Time ($t$)', fontsize=16)
@@ -80,9 +75,9 @@ def plot_1d_latent_sde(X_data, X_samples, plot_path, time, ts, name, n_samples):
     # ---------------------------------------------------------
     # Right plot: Learned Samples
     # ---------------------------------------------------------
-    [ax1.plot(t_np, X_samples[:, i, 0], alpha=0.8) for i in range(actual_samples)]
+    [ax1.plot(t_np, X_samples[:, i, 0], alpha=0.8) for i in range(n_samples)]
 
-    ax1.scatter(np.repeat(t_np[0], actual_samples), X_samples[0, :actual_samples, 0],
+    ax1.scatter(np.repeat(t_np[0], n_samples), X_samples[0, :n_samples, 0],
                 marker='x', color='black', s=50, zorder=5)
 
     ax1.set_xlabel('Time ($t$)', fontsize=16)

@@ -1,0 +1,53 @@
+# model : "./code/models/"
+
+sde :
+  name : climate
+  system : ClimateModel
+  sde_type : ito
+
+  t_span : [0., 3.]
+  dt : 0.01
+  noise_type: "diagonal"
+  noise_std : 0.01
+
+  method : 'euler'
+  adjoint : True
+  levy_area : 'space-time'
+
+
+size :
+  data_size : 1
+  batch_size : 1024
+  latent_size : 4
+  context_size : 64
+  hidden_size : 128
+
+
+training :
+  n_iters : 200
+  pause : 2
+  device : cpu
+  optimizer : adam
+
+  lr_scheduler : exponential
+  lr_init : 0.01
+  lr_gamma : 0.997
+  lr_step_size : 2
+
+  kl_scheduler : linear
+  kl_iters : 100
+
+
+save:
+  model : True
+  model_every : 2
+  plot : True
+  data : True
+  n_samples : 2
+
+path:
+  data : "./code/data/"
+  model : "./code/models/"
+  plot : "./code/img/"
+
+
