@@ -36,12 +36,74 @@ def get_sde_kwargs(config, approx : bool):
     return sde_kwargs
 
 
-def plot_1d_latent_sde(X_data, X_samples, plot_path, time, ts, name):
-    # call plot_2d_latent_sde with the first two dimensions of the data and samples
-    plot_2d_latent_sde(X_data[:, :, :2], X_samples[:, :, :2], plot_path, time, ts, name)
+
+def plot_1d_latent_sde(X_data, X_samples, plot_path, time, ts, name, n_samples):
+    """
+    Plots 1D trajectories of the data and the samples from the trained SDE.
+    The X-axis represents Time (t), and the Y-axis represents the state value (X_1).
+    """
+    fig = plt.figure(figsize=(20, 9))
+    grid = gs.GridSpec(1, 2)
+
+    # 1D plots use standard 2D axes, so no `projection='3d'` is needed
+    ax0 = fig.add_subplot(grid[0, 0])
+    ax1 = fig.add_subplot(grid[0, 1])
+
+    # Safely clamp the number of trajectories to the actual batch size
+    actual_samples = min(n_samples, X_data.shape[1])
+
+    # Convert the time tensor to a numpy array for the X-axis
+    t_np = ts.cpu().numpy()
+
+    # ---------------------------------------------------------
+    # Left plot: Data
+    # ---------------------------------------------------------
+    data_np = X_data.cpu().numpy()
+
+    # Plot trajectories (Time vs State)
+    [ax0.plot(t_np, data_np[:, i, 0], alpha=0.8) for i in range(actual_samples)]
+
+    # Scatter the initial starting points (t=0)
+    # We use np.repeat to create a time coordinate array [t[0], t[0], ...] matching the sample size
+    ax0.scatter(np.repeat(t_np[0], actual_samples), data_np[0, :actual_samples, 0],
+                marker='x', color='black', s=50, zorder=5)
+
+    ax0.set_xlabel('Time ($t$)', fontsize=16)
+    ax0.set_ylabel('State ($X_1$)', fontsize=16)
+    ax0.set_title('Data Trajectories', fontsize=20)
+    ax0.grid(True, alpha=0.3)
+
+    # Capture limits to synchronize the right-hand plot
+    xlim = ax0.get_xlim()
+    ylim = ax0.get_ylim()
+
+    # ---------------------------------------------------------
+    # Right plot: Learned Samples
+    # ---------------------------------------------------------
+    [ax1.plot(t_np, X_samples[:, i, 0], alpha=0.8) for i in range(actual_samples)]
+
+    ax1.scatter(np.repeat(t_np[0], actual_samples), X_samples[0, :actual_samples, 0],
+                marker='x', color='black', s=50, zorder=5)
+
+    ax1.set_xlabel('Time ($t$)', fontsize=16)
+    ax1.set_ylabel('State ($X_1$)', fontsize=16)
+    ax1.set_title('Learned Trajectories', fontsize=20)
+    ax1.grid(True, alpha=0.3)
+
+    # Lock the axes to match the Data plot for accurate visual comparison
+    ax1.set_xlim(xlim)
+    ax1.set_ylim(ylim)
+
+    # ---------------------------------------------------------
+    # Save Output
+    # ---------------------------------------------------------
+    os.makedirs(plot_path, exist_ok=True)
+    plt.savefig(os.path.join(plot_path, f"{name}_time_{time}.png"), bbox_inches='tight')
+    plt.close()
 
 
-def plot_2d_latent_sde(X_data, X_samples, plot_path, time, ts, name):
+
+def plot_2d_latent_sde(X_data, X_samples, plot_path, time, ts, name, n_samples):
     """
     Plots the 2D latent SDE trajectories and saves the plot to the specified path.
 
@@ -102,13 +164,16 @@ def plot_2d_latent_sde(X_data, X_samples, plot_path, time, ts, name):
 
 
 
-def plot_3d_latent_sde(X_data, X_samples, plot_path, time, ts, name):
+def plot_3d_latent_sde(X_data, X_samples, plot_path, time, ts, name, n_samples):
     """
     Plots the 3D latent SDE trajectories and saves the plot to the specified path.
 
     Parameters:
     -----------
     """
+    # extract only n_samples trajectories from X_samples
+    X_samples = X_samples[:, :n_samples, :]
+
     fig = plt.figure(figsize=(16, 9), dpi = 600)
     grid = gs.GridSpec(1, 2)
     ax0 = fig.add_subplot(grid[0, 0], projection='3d')
@@ -117,8 +182,8 @@ def plot_3d_latent_sde(X_data, X_samples, plot_path, time, ts, name):
     # Left plot: data.
     z1, z2, z3 = np.split(X_data.cpu().numpy(), indices_or_sections=3, axis=-1)
 
-    [ax0.plot(z1[:, i, 0], z2[:, i, 0], z3[:, i, 0]) for i in range(X_samples.shape[1])]
-    ax0.scatter(z1[0, :X_samples.shape[1], 0], z2[0, :X_samples.shape[1], 0], z3[0, :X_samples.shape[1], 0], marker='x')
+    [ax0.plot(z1[:, i, 0], z2[:, i, 0], z3[:, i, 0]) for i in range(X_data.shape[1])]
+    ax0.scatter(z1[0, :X_data.shape[1], 0], z2[0, :X_data.shape[1], 0], z3[0, :X_data.shape[1], 0], marker='x')
     ax0.set_yticklabels([])
     ax0.set_xticklabels([])
     ax0.set_zticklabels([])
