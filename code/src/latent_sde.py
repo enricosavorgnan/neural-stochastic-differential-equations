@@ -503,8 +503,11 @@ class LatentSDETrainer:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Latent SDE Model")
     parser.add_argument("--config", type=str, default="./code/config/config.yaml", help="Path to the configuration YAML file")
+    parser.add_argument("--train", action='store_true', help="Whether to train the model or just plot the results")
     args = parser.parse_args()
 
     sde = LatentSDETrainer(config_path=args.config)
-    # sde.train()
-    sde.plot()
+    if args.train:
+        sde.train()
+    else:
+        sde.plot()

@@ -46,8 +46,8 @@ save:
   n_samples : 2
 
 path:
-  data : "./code/data/"
-  model : "./code/models/"
-  plot : "./code/img/"
+  data : "./code/data/lorenz/"
+  model : "./code/models/lorenz/"
+  plot : "./code/img/lorenz/"
 
 
