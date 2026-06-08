@@ -42,6 +42,7 @@ The repository is intended to provide code examples, papers and a summary about 
 - `systems.py`: \ 
   Contains different SDE models ready-to-use for training DLGMs, including:
   - **Lorenz Attractor**
+  - **Climate Model** by Bezzi, Sutara, Vulpiani, Parisi, 1983
 
 
 
