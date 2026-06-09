@@ -1,4 +1,4 @@
-# model : "./code/models/lorenz/sde_lorenz_time_06-09_09-26_iter_500-500.pt"
+model : "./code/models/lorenz/sde_lorenz_time_06-09_19-47_iter_680-2000.pt"
 
 sde :
   name : lorenz
@@ -25,23 +25,23 @@ size :
 
 
 training :
-  n_iters : 500
-  pause : 2
+  n_iters : 2000
+  pause : 20
   device : cpu
   optimizer : adam
 
   lr_scheduler : exponential
-  lr_init : 0.01                  # Default 0.01. Adapt if the model trained is used as a checkpoint for further training.
+  lr_init : 0.001                  # Default 0.01. Adapt if the model trained is used as a checkpoint for further training.
   lr_gamma : 0.997
   lr_step_size : 2
 
   kl_scheduler : linear
-  kl_iters : 350                  # Default 350. Adapt if the model trained is used as a checkpoint for further training.
+  kl_iters : 1000                  # Default 350. Adapt if the model trained is used as a checkpoint for further training.
 
 
 save:
   model : True
-  model_every : 2
+  model_every : 20
   plot : True
   data : True
   n_samples : 5

@@ -6,13 +6,13 @@
 
 #SBATCH --job-name=LatentSDE
 #SBATCH --output=latent_sde_train_%j.log
-#SBATCH --partition=gpu
+#SBATCH --partition=EPYC
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=16
 ## SBATCH --gres=gpu:1
-#SBATCH --mem=48G
-#SBATCH --time=08:00:00
+#SBATCH --mem=32G
+#SBATCH --time=02:00:00
 
 # ==============================================================================
 # ENVIRONMENT SETUP
@@ -23,9 +23,11 @@
 # module load python/3.10
 
 # 2. Navigate to the repository root directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-cd "${ROOT_DIR}"
+if [ -n "$SLURM_SUBMIT_DIR" ]; then
+    cd "$SLURM_SUBMIT_DIR"
+else
+    cd "$(dirname "$0")/../.."
+fi
 
 echo "Working directory set to: $(pwd)"
 
@@ -33,7 +35,7 @@ echo "Working directory set to: $(pwd)"
 if [ -d ".venv" ]; then
     echo "Activating virtual environment from .venv..."
     source .venv/bin/activate
-https://github.com/enricosavorgnan/neural-stochastic-differential-equations.gitelif [ -d "venv" ]; then
+elif [ -d "venv" ]; then
     echo "Activating virtual environment from venv..."
     source venv/bin/activate
 else
@@ -45,9 +47,9 @@ fi
 # ==============================================================================
 
 # 1) Lorenz Model config
-CONFIG_FILE="code/config/latent_sde/config_lorenz.yaml"
+# CONFIG_FILE="code/config/latent_sde/config_lorenz.yaml"
 # 2) Climate Model config
-# CONFIG_FILE="code/config/latent_sde/config_climate.yaml"
+CONFIG_FILE="code/config/latent_sde/config_climate.yaml"
 
 echo "Training model using configuration: ${CONFIG_FILE}"
 

@@ -25,8 +25,8 @@ size :
 
 
 training :
-  n_iters : 200
-  pause : 2
+  n_iters : 500
+  pause : 20
   device : cpu
   optimizer : adam
 
@@ -36,12 +36,12 @@ training :
   lr_step_size : 2
 
   kl_scheduler : linear
-  kl_iters : 100
+  kl_iters : 350
 
 
 save:
   model : True
-  model_every : 2
+  model_every : 20
   plot : True
   data : True
   n_samples : 2
