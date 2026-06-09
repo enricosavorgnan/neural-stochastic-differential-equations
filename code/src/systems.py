@@ -40,9 +40,9 @@ class StochasticLorenz:
         return torch.cat([g1, g2, g3], dim=1)
 
     @torch.no_grad()
-    def sample(self, x0, ts, noise_std, normalize):
+    def sample(self, x0, ts, noise_std, method, normalize):
         """Sample data for training. Store data normalization constants if necessary."""
-        X = torchsde.sdeint(self, x0, ts)
+        X = torchsde.sdeint(self, x0, ts, method = method)
         if normalize:
             mean, std = torch.mean(X, dim=(0, 1)), torch.std(X, dim=(0, 1))
             X.sub_(mean).div_(std).add_(torch.randn_like(X) * noise_std)
@@ -77,9 +77,9 @@ class ClimateModel:
         return self.eps
 
     @torch.no_grad()
-    def sample(self, x0, ts, noise_std, normalize):
+    def sample(self, x0, ts, noise_std, method, normalize):
         # map x0, ts from points to
-        X = torchsde.sdeint(self, x0, ts)
+        X = torchsde.sdeint(self, x0, ts, method=method)
         if normalize:
             mean, std = torch.mean(X), torch.std(X)
             X.sub_(mean).div_(std).add_(torch.randn_like(X) * noise_std)

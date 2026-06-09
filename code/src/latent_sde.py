@@ -1,18 +1,24 @@
 """
 This file contains the implementation of the Latent SDE model and its training loop.
 """
-import torch
-import torch.nn as nn
-import torchsde
-
+import sys
 import os
 import yaml
 import datetime
 import tqdm
 import argparse
 
+import torch
+import torch.nn as nn
+import torchsde
+from torch.utils.data import TensorDataset, DataLoader
+
 import utils
 from systems import StochasticLorenz, ClimateModel
+
+# Increase the stack recursion limit to avoid issues
+# with the adjoint method when using a large number of iterations or a complex model.
+sys.setrecursionlimit(20000)
 
 
 class Encoder(nn.Module):
@@ -272,6 +278,7 @@ class LatentSDETrainer:
         self.levy_area_type = config['sde']['levy_area']
 
         self.data_size = config['size']['data_size']
+        self.dataset_size = config['size']['dataset_size']
         self.batch_size = config['size']['batch_size']
         self.latent_size = config['size']['latent_size']
         self.context_size = config['size']['context_size']
@@ -315,7 +322,7 @@ class LatentSDETrainer:
                 input_size = self.data_size,
                 latent_size = self.latent_size,
                 context_size = self.context_size,
-                hidden_size = self.hidden_size
+                hidden_size = self.hidden_size,
             ).to(self.device)
         if self.model:
             self.load_model()
@@ -358,11 +365,11 @@ class LatentSDETrainer:
         """
         Generates synthetic data according to the specified SDE type and stores it in self.data.
         """
-        _X0 = torch.randn(self.batch_size, self.data_size, device=self.device)
-        ts = torch.linspace(self.t_span[0], self.t_span[1], steps=100, device=self.device)
+        _X0 = torch.randn(self.dataset_size, self.data_size, device=self.device)
+        ts = torch.linspace(self.t_span[0], self.t_span[1], steps=int((self.t_span[1] - self.t_span[0]) / self.dt), device=self.device)
         system_class = eval(self.sde_system)
         system = system_class()
-        X = system.sample(x0=_X0, ts=ts, noise_std=self.noise_std, normalize=True)
+        X = system.sample(x0=_X0, ts=ts, noise_std=self.noise_std, method=self.method, normalize=True)
 
         self.data = (X, ts)
 
@@ -418,11 +425,29 @@ class LatentSDETrainer:
             samples = self.latent_sde.sample(batch_size=self.batch_size, ts=ts, brownian_motion=bm, dt=self.dt).detach().cpu().numpy()
 
         if self.data_size == 1:
-            utils.plot_1d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
+            utils.plot_1d_latent_sde(ts=ts,
+                                     X_data=data,
+                                     X_samples=samples,
+                                     time=time,
+                                     plot_path = self.plot_path,
+                                     name = self.sde_name,
+                                     n_samples=self.n_samples)
         elif self.data_size == 2:
-            utils.plot_2d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
+            utils.plot_2d_latent_sde(ts=ts,
+                                     X_data=data,
+                                     X_samples=samples,
+                                     time=time,
+                                     plot_path = self.plot_path,
+                                     name = self.sde_name,
+                                     n_samples=self.n_samples)
         else:
-            utils.plot_3d_latent_sde(ts=ts, X_data=data, X_samples=samples, time=time, plot_path = self.plot_path, name = self.sde_name, n_samples=self.n_samples)
+            utils.plot_3d_latent_sde(ts=ts,
+                                     X_data=data,
+                                     X_samples=samples,
+                                     time=time,
+                                     plot_path = self.plot_path,
+                                     name = self.sde_name,
+                                     n_samples=self.n_samples)
 
 
     def model_saver(self, time, checkpoint : bool = False, iteration=None):
@@ -466,7 +491,12 @@ class LatentSDETrainer:
         now = datetime.datetime.now().strftime("%m-%d_%H-%M")
 
         # Retrieve data
-        X, ts = self.data
+        X_full, ts = self.data
+        X_full = X_full.transpose(0, 1)
+        X_batch = None
+        dataset = TensorDataset(X_full)
+        dataloader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
+        data_iterator = iter(dataloader)
 
         # Sample a brownian motion
         # Just for visualization
@@ -474,8 +504,16 @@ class LatentSDETrainer:
 
         # Start training
         for iteration in tqdm.tqdm(range(1, self.n_iters+1)):
+
+            try:
+                X_batch = next(data_iterator)[0]
+            except StopIteration:
+                data_iterator = iter(dataloader)
+                X_batch = next(data_iterator)[0]
+            X_batch = X_batch.transpose(0, 1)
+
             self.latent_sde.zero_grad()
-            log_p_X, kl = self.latent_sde(X, ts, noise_std = self.noise_std, adjoint = self.adjoint, method = self.method, dt = self.dt)
+            log_p_X, kl = self.latent_sde(X_batch, ts, noise_std = self.noise_std, adjoint = self.adjoint, method = self.method, dt = self.dt)
 
             loss = - log_p_X + kl * self.kl_scheduler(iteration)
 
@@ -496,7 +534,7 @@ class LatentSDETrainer:
         if self.save_model:
             self.model_saver(time=now)
         if self.save_plot:
-            self.plot_saver(bm=brownian_motion, time=now, data=X, ts=ts)
+            self.plot_saver(bm=brownian_motion, time=now, data=X_batch, ts=ts)
 
 
 
