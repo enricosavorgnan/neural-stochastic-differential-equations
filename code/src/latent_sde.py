@@ -294,7 +294,6 @@ class LatentSDETrainer:
         self.kl_scheduler_name = config['training']['kl_scheduler']
         self.kl_annealed_iters = config['training']['kl_iters']
         self.pause_every = config['training']['pause']
-        self.checkpoint = config['checkpoint']
 
         self.save_model = config['save']['model']
         self.save_model_every = config['save']['model_every']
@@ -308,6 +307,7 @@ class LatentSDETrainer:
 
         self.data = config.get('data', None)
         self.model = config.get('model', None)
+        self.checkpoint = int(config['checkpoint'])
 
         # Generate Data
         if not self.data:

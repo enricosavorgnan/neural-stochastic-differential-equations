@@ -1,4 +1,5 @@
 # model : "./code/models/"
+checkpoint :  0
 
 sde :
   name : climate
@@ -25,7 +26,7 @@ size :
 
 
 training :
-  n_iters : 500
+  n_iters : 2000
   pause : 20
   device : cpu
   optimizer : adam
@@ -36,7 +37,7 @@ training :
   lr_step_size : 2
 
   kl_scheduler : linear
-  kl_iters : 350
+  kl_iters : 1000
 
 
 save:

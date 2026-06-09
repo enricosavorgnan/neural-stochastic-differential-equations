@@ -54,6 +54,6 @@ CONFIG_FILE="code/config/latent_sde/config_climate.yaml"
 echo "Training model using configuration: ${CONFIG_FILE}"
 
 # Run the training script.
-python code/src/latent_sde.py --config "${CONFIG_FILE}" --train
+python -u code/src/latent_sde.py --config "${CONFIG_FILE}" --train
 
 echo "Job completed successfully."

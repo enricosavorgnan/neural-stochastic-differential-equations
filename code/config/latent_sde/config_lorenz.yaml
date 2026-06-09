@@ -1,4 +1,5 @@
 model : "./code/models/lorenz/sde_lorenz_time_06-09_19-47_iter_680-2000.pt"
+checkpoint :  680
 
 sde :
   name : lorenz
@@ -31,7 +32,7 @@ training :
   optimizer : adam
 
   lr_scheduler : exponential
-  lr_init : 0.001                  # Default 0.01. Adapt if the model trained is used as a checkpoint for further training.
+  lr_init : 0.01                   # Default 0.01. Adapt if the model trained is used as a checkpoint for further training.
   lr_gamma : 0.997
   lr_step_size : 2
 
