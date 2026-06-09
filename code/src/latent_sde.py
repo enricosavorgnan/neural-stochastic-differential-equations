@@ -412,7 +412,7 @@ class LatentSDETrainer:
             self.lr_scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=lambda epoch: 1.0)
 
         if self.kl_scheduler_name.lower() == 'linear':
-            self.kl_scheduler = lambda step: min(1.0, (step+self.checkpoint) / self.kl_annealed_iters)
+            self.kl_scheduler = lambda step: min(1.0, step / self.kl_annealed_iters)
         else:
             # is constant, so we can use a lambda scheduler that always returns 1
             self.kl_scheduler = lambda step: 1.0
@@ -509,7 +509,7 @@ class LatentSDETrainer:
         brownian_motion = self.generate_brownian_motion()
 
         # Start training
-        for iteration in tqdm.tqdm(range(1, self.n_iters+1)):
+        for iteration in tqdm.tqdm(range(self.checkpoint+1, self.n_iters+1)):
 
             try:
                 X_batch = next(data_iterator)[0]
@@ -528,7 +528,6 @@ class LatentSDETrainer:
             torch.nn.utils.clip_grad_norm_(self.latent_sde.parameters(), max_norm=1.0)
             self.optimizer.step()
             self.lr_scheduler.step()
-            # self.kl_scheduler.step()
 
             if iteration % self.pause_every == 0:
                 print(f"Iter: {iteration}/{self.n_iters}, \tLoss: {loss.item():.4f}, \tLog p(X): {log_p_X.item():.4f}, \tKL: {kl.item():.4f}")
