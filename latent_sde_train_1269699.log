@@ -1,0 +1,6 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Training model using configuration: code/config/latent_sde/config_lorenz.yaml
+Model loaded from: ./code/models/lorenz/sde_lorenz_time_06-09_19-47_iter_680-2000.pt
+Checkpoint at iteration 680 detected. Adjusting initial learning rate to 0.003600 to account for previous training.
+  0%|          | 0/1320 [00:00<?, ?it/s]  0%|          | 1/1320 [00:10<3:42:17, 10.11s/it]  0%|          | 2/1320 [00:20<3:41:17, 10.07s/it]  0%|          | 3/1320 [00:30<3:43:40, 10.19s/it]  0%|          | 4/1320 [00:40<3:40:50, 10.07s/it]  0%|          | 5/1320 [00:50<3:39:16, 10.00s/it]  0%|          | 6/1320 [01:00<3:40:36, 10.07s/it]  1%|          | 7/1320 [01:10<3:42:28, 10.17s/it]  1%|          | 8/1320 [01:20<3:41:57, 10.15s/it]  1%|          | 9/1320 [01:31<3:46:06, 10.35s/it]  1%|          | 10/1320 [01:41<3:42:44, 10.20s/it]  1%|          | 11/1320 [01:51<3:40:46, 10.12s/it]

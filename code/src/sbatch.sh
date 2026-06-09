@@ -5,7 +5,7 @@
 # ==============================================================================
 
 #SBATCH --job-name=LatentSDE
-#SBATCH --output=latent_sde_train_%j.log
+#SBATCH --output=log/latent_sde_train_%j.log
 #SBATCH --partition=EPYC
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -47,9 +47,9 @@ fi
 # ==============================================================================
 
 # 1) Lorenz Model config
-# CONFIG_FILE="code/config/latent_sde/config_lorenz.yaml"
+CONFIG_FILE="code/config/latent_sde/config_lorenz.yaml"
 # 2) Climate Model config
-CONFIG_FILE="code/config/latent_sde/config_climate.yaml"
+# CONFIG_FILE="code/config/latent_sde/config_climate.yaml"
 
 echo "Training model using configuration: ${CONFIG_FILE}"
 
