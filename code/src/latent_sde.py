@@ -294,6 +294,7 @@ class LatentSDETrainer:
         self.kl_scheduler_name = config['training']['kl_scheduler']
         self.kl_annealed_iters = config['training']['kl_iters']
         self.pause_every = config['training']['pause']
+        self.checkpoint = config['checkpoint']
 
         self.save_model = config['save']['model']
         self.save_model_every = config['save']['model_every']
@@ -411,10 +412,15 @@ class LatentSDETrainer:
             self.lr_scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=lambda epoch: 1.0)
 
         if self.kl_scheduler_name.lower() == 'linear':
-            self.kl_scheduler = lambda step: min(1.0, step / self.kl_annealed_iters)
+            self.kl_scheduler = lambda step: min(1.0, (step+self.checkpoint) / self.kl_annealed_iters)
         else:
             # is constant, so we can use a lambda scheduler that always returns 1
             self.kl_scheduler = lambda step: 1.0
+
+        if self.checkpoint:
+            self.lr_init = self.lr_init * (self.lr_gamma ** (self.checkpoint // self.lr_step_size))
+            print(f"Checkpoint at iteration {self.checkpoint} detected. Adjusting initial learning rate to {self.lr_init:.6f} to account for previous training.")
+
 
 
     def plot_saver(self, bm, time, data, ts):
