@@ -61,7 +61,7 @@ class ClimateModel:
     noise_type = "diagonal"
     sde_type = "ito"
 
-    def __init__(self, a : float = 1, b : float = 0.1, omega : float = 0.01, epsilon : float = 0.35):
+    def __init__(self, a : float = 1, b : float = 0.1, omega : float = 0.1, epsilon : float = 0.53):
         self.a = a
         self.b = b
         self.omega = omega
@@ -83,4 +83,5 @@ class ClimateModel:
         if normalize:
             mean, std = torch.mean(X), torch.std(X)
             X.sub_(mean).div_(std).add_(torch.randn_like(X) * noise_std)
+        print(f"samples done")
         return X

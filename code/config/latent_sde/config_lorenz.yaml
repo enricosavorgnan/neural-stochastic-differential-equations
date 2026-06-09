@@ -1,4 +1,4 @@
-model : "./code/models/lorenz/sde_lorenz_time_06-09_09-26_iter_500-500.pt"
+# model : "./code/models/lorenz/sde_lorenz_time_06-09_09-26_iter_500-500.pt"
 
 sde :
   name : lorenz
