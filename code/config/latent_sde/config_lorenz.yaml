@@ -17,7 +17,8 @@ sde :
 
 size :
   data_size : 3
-  batch_size : 1024
+  dataset_size : 5000
+  batch_size : 64
   latent_size : 4
   context_size : 64
   hidden_size : 128

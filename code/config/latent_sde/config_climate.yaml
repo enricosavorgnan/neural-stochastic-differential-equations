@@ -5,8 +5,8 @@ sde :
   system : ClimateModel
   sde_type : ito
 
-  t_span : [0., 3.]
-  dt : 0.01
+  t_span : [0., 2500.]
+  dt : 0.1
   noise_type: "diagonal"
   noise_std : 0.01
 
@@ -17,7 +17,8 @@ sde :
 
 size :
   data_size : 1
-  batch_size : 1024
+  dataset_size : 5000
+  batch_size : 64                # Default 1024
   latent_size : 4
   context_size : 64
   hidden_size : 128
