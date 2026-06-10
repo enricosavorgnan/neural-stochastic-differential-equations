@@ -4,25 +4,68 @@ The repository is intended to provide code examples, papers and a summary about 
 
 
 ## Introduction
+The following is a simple, hopefully user-friendly, introduction to the topic of Neural SDEs and their applications. \
+A more dense discussion is provided in `./docs/summary.pdf`. \
+The discussion is entirely based on the material shared in the [Reference](#references) section. 
 
 ### Neural and Latent SDEs 
 In a glimpse, **Neural Stochastic Differential Equations** (Neural SDE) consist in SDE where both the drift and the diffusion term are parameterized by Neural Networks. \
-Formally, they can be seen as a *Deep Gaussian Latent Model* (DGLM) at the diffusion limit, i.e., with infinitely deep and having the maps from each layer to the following close to 0 (see next sections for more information). \
-Neural SDEs can be used as *continuisations* of DGLM, thus having a practical application in the modeling of time series and, clearly, of stochastic models. 
+Formally, they can be seen as a *Deep Latent Gaussian Model* (DLGM) at the diffusion limit, i.e., with infinitely deep and the step size between layers approaches 0 (see next sections for more information). \
+Neural SDEs can be used as *continuisations* of DLGM, thus having a practical application in the modeling of time series and, clearly, of stochastic models. 
 
 The repository focuses on a particular application of Neural SDE, called **Latent SDE**, where the expressive power of SDE is used to learn (latent) continuous-time dynamics. \
 Both observed and latent variables are supposed to be subjected to white noise. 
 
 The model is actually a *Variational AutoEncoder* (VAE). \
 The encoder takes in input a whole *flipped* (from the end to the beginning) trajectory of the observed variables and extracts the information about it exploiting GRU layers (light-weight Recurrent Neural Networks). \
-The information is then used to reconstruct the mean and the variance of the prior gaussian distribution.
+The information is then used to reconstruct the mean and the variance of the posterior gaussian distribution.
 Stochastic Adjoint methods are then run to compute the gradients of the loss function, which is the Evidence Lower Bound (ELBO) of the model. \
-Adjoint methods also allow the computation of a latent variables' trajectory, which is then used to reconstruct the observed variable by feeding the decoder module. \
-Adjoints also compute the (path-wise) KL divergence (*Radon-Nikodym derivative*) between the paths of the posterior SDE and the prior SDE; this divergence is then added to the KL divergence computed between the prior and posterior distributions in order to compute the loss. \
+The call to adjoint methods consists of two steps: a forward flow, which allows for the computation of a latent variables' trajectory, then used to reconstruct the observed variable by feeding the decoder module, and a backward flow, where the adjoint dynamics is actually computed. \
+The forward flow also computes the (path-wise) KL divergence (*Radon-Nikodym derivative*) between the paths of the posterior SDE and the prior SDE; this divergence is then added to the KL divergence computed between the prior and posterior distributions in order to compute the loss. \
 
 The loss is parameterized by both the parameters of the prior distribution, of the posterior one and by the parameters of the SDEs deriving by the use of adjoints methods.
 
-### (Theory of) SDEs as Diffusion Limits of DGLMs
+### SDEs as Diffusion Limits of DLGMs
+DLGMs are discrete-time Markov chains:
+$$
+\begin{align}
+X_0 &= Z_0 \\
+X_t &= X_{t-1} + \mu_t(X_{t-1}; \theta) + \sigma_t(X_{t-1}; \theta)Z_t = f_\theta(Z_t; \theta)   & t = 1, \dots, k \\
+Y & \sim \mathbb{P}[ \cdot | X_k],
+\end{align}
+$$
+where $Z_{(\cdot)} \sim \mathcal{N}(0, \mathbb{I}^d)$, Xs are latent variables and Y is the observed.
+At the diffusion limit, DLGMs read as an Ito's SDE:
+$$
+dX_t = \mu(X_t, t)dt + \sigma(X_t, t)dW_t \quad t \in [0, 1], dW_t \sim \mathcal{N}(0, dt)
+$$
+
+Since we are dealing with deep encoders, we also deal with variational inference. \
+However, since we moved to a continuous setting, the common, discrete approach is no longer exploitable.
+We thus need to define a new, continuous variational inference scheme.
+
+The latent space is, in this new scenario, defined by the \textit{Wiener space} $\mathbf{W}$, meaning it is the space of continuous paths $w: [0, 1] \rightarrow \mathbb{R}^d$, whose primitive is the Wiener Process $W = \{W_t \}_{t \in [0,1]}$. \\
+The usual discrete approach requires $Z_i$ to be i.i.d.: here, it is required for each increment $dW_t = W_t-W_s$ to be independent to the previous ones. \\
+We can define a probability $\mathbb{Q}(dW)$ over the Wiener process, such that for each $0 < t_1 < t_2, \dots \leq 1$, $W_{t_i}-W_{t_{i-1}} \sim \mathcal{N}\big(0, (t_i-t_{i-1})\mathbb{I}_d \big)$.
+It can be shown that, if the neural mappings for $\mu$ and $\sigma$ are continuous, then they are measurable, and:
+\begin{equation}
+f_t(W;\psi) = \int_0^t \mu\big(f_s(W;\psi),s;\theta \big) ds + \int_0^t \sigma\big(f_r(W; \psi),r; \phi \big) dW_r, \label{eq:vi-path}
+\end{equation}
+with $\theta, \phi, \psi$ parameters, and $f_{(\cdot)}$ the mapping from $W_0$ to $W_{(\cdot)}$.
+
+Keeping this formulation in mind, by applying the Gibbs' variational principle we can define a continuous form for the ELBO:
+$$
+  -\log \mathbb{P}_\theta[Y] = \inf_{\nu \in \mathcal{P}(\mathbf{W})} \big\{\text{ KL}(\nu || \mathbb{Q}) - \int_{\mathbf{W}} \log \mathbb{P}_\theta \big[Y | f_1(W, \theta)\big] \nu(dW) \big \}
+$$
+Moreover, the Girsanov's Theorem states that in well-behaved scenario, like the ones in which we are usually involved in, then the KL divergence has a closed form solution, so that we can rewrite the ELBO as:
+$$
+  -\log \mathbb{P}_\theta[Y] = \inf_{u} \mathbb{E}_{\mathbb{Q}} \big\{\frac{1}{2}\int_0^1 ||u_t||^2 dt - \log \mathbb{P}_\theta \big[Y | Z_{(\cdot)} \big] \big\},
+$$
+where $u$ is defined as:
+$$
+  u(z, t) = \sigma(z, t)^{-1} \big( h(x, t) - \tilde(x, t) \big)
+$$
+where $h, \tilde h$ are the drifts of the prior SDE and posterior SDE respectively.
 
 ### Stochastic Adjoint Methods
 Stochastic adjoint methods have been developed in *Li et al.*, *2020*, and are a stochastic extension of the ordinary adjoint methods used to solve Neural and Latent ODEs. \
@@ -46,7 +89,7 @@ $$
 Now we want to derive closed forms for the derivatives of the processes $\phi$ and $\psi$ with respect to the variables. Since Stratonovich SDEs allow the use of common calculus to compute the chain rule, we get:
 $$
 \begin{align}
-  J_{s,t}(x)&:= \nabla_x \psi_{s,t}(x) = \mathbb{I}^d - \int_s^t \nabla \mu(\psi_{q,t}(x), q)J_{q,t}(x)dq - \int_s^t \nabla \sigma(\psi_{q,t}(x), q)J_{s,t}(x) \circ dY_q \\
+  J_{s,t}(x)&:= \nabla_x \psi_{s,t}(x) = \mathbb{I}^d - \int_s^t \nabla \mu(\psi_{q,t}(x), q)J_{q,t}(x)dq - \int_s^t \nabla \sigma(\psi_{q,t}(x), q)J_{q,t}(x) \circ dY_q \\
   K_{s,t}(x)&:= J_{s,t}(x)^{-1} = \mathbb{I}^d + \int_s^t K_{q,t}(x) \nabla \mu(\psi_{q,t}(x), q) dq + \int_s^t K_{q,t}(x) \nabla \sigma(\psi_{q,t}(x), q) \circ dY_q
 \end{align}
 $$
@@ -55,14 +98,14 @@ We define $A_{s,t}(x) = \partial \mathcal{L}(\phi_{s,t}(x)) / \partial x$ and, a
 Analogously, we define $B_{s,t}(x):=A_{s,t}(\psi_{s,t}(x))$. With a bit of calculus, it turns out that:
 $$
 \begin{align}
-  B_{s,t}(x)  &= \nabla \mathcal{L} \cdot K_{s,t}(x) \\ 
-              &= \nabla \mathcal{L}(x) + \int_s^t \nabla \mu(\psi_{q,t}(x),q)^T B_{q,t}(x)dq + \int_s^t \nabla \sigma(\psi_{q,t}(x), x)^T B_{q,t}(x) \circ dY_q
+  B_{s,t}(x)&= \nabla \mathcal{L} \cdot K_{s,t}(x) \\ 
+            &= \nabla \mathcal{L}(x) + \int_s^t \nabla \mu(\psi_{q,t}(x),q)^T B_{q,t}(x)dq + \int_s^t \nabla \sigma(\psi_{q,t}(x), x)^T B_{q,t}(x) \circ dY_q
 \end{align}
 $$
-This very last equation, with the backward SDE we defined above, constitutes the **adjoint system**, whose solution is the goal of stochastic adjoint methods. \
+This very last equation, with the backward SDE we defined above, constitutes the **adjoint system**, whose solution is the goal of stochastic adjoint methods. 
 
 The target is approximated by using two (deterministic) maps. \
-The forward pass is mapped by a function $G(x, \{W\}; \theta) \approx \phi_{0, T}(z) $, while the solution to the backward SDE is computed by a function $F(\phi, \{W\}; \omega) \approx B_{0, T}(x)$ so that $F(\phi, \{W\}; \omega) \approx F(G(x), \{W\})$.
+The forward pass is mapped by a function $G(x, \{W\}; \theta) \approx \phi_{0, T}(z) $, while the solution to the backward SDE is computed by a function $F(\phi, \{W\}; \omega) \approx B_{0, T}(x)$ so that $F(\phi, \{W\}; \omega) \approx F(G(x), \{W\})$. Those functions are, in practice, SDE solvers.
 
 
 ## `code/` Structure
