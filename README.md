@@ -22,17 +22,47 @@ Adjoints also compute the (path-wise) KL divergence (*Radon-Nikodym derivative*)
 
 The loss is parameterized by both the parameters of the prior distribution, of the posterior one and by the parameters of the SDEs deriving by the use of adjoints methods.
 
+### (Theory of) SDEs as Diffusion Limits of DGLMs
 
 ### Stochastic Adjoint Methods
 Stochastic adjoint methods have been developed in *Li et al.*, *2020*, and are a stochastic extension of the ordinary adjoint methods used to solve Neural and Latent ODEs. \
 The deterministic version consisted into the integration of a backward ODE, so to efficiently compute the gradients of loss with respect to the neural network and ODEs parameters.
 
 The stochastic version is, at the core, pretty similar. \
-It exploits a Stratonovich formulation of the 
+It exploits the symmetry of a Stratonovich SDE to compute a *backward* flow, i.e., a (stochastic) path from the end to the beginning point. \
+This inverse path is crucial since it allows the computation of the gradient of the loss w.r.t. the SDE parameters by integrating a new Stratonovich SDE. \
+To visualize the adjoint system solved, let's write down a bit of equations:
+- **Forward SDE**, the SDE ruling the observations:
+$$
+  X_t:= \phi_{s,t}(x_s) = x_s + \int_s^t \mu(x_q, q)dq + \int_s^t \sigma(x_q, q) \circ dW_q,
+$$
+  where $\mu$ represents the drift term, $\sigma$ the diffusion term, and $\{dW_q\}_{q=s:t}$ a realization of a Wiener process.
+- **Backward SDE**, valid in case of a (simple) invertibility condition:
+$$
+  \psi_{s,t}(x_t) = x_t - \int_s^t \mu(\psi_{q,t}(x_t), q)dq - \int_s^t \sigma(\psi_{q,t}(x_t), q) \circ dY_q,
+$$
+  where here $\{dY_q\}_{q=t:s}$ is exactly the inverted Wiener process previously identified as $\{dW_q\}_{q=s:t}$.
 
+Now we want to derive closed forms for the derivatives of the processes $\phi$ and $\psi$ with respect to the variables. Since Stratonovich SDEs allow the use of common calculus to compute the chain rule, we get:
+$$
+\begin{align}
+  J_{s,t}(x)&:= \nabla_x \psi_{s,t}(x) = \mathbb{I}^d - \int_s^t \nabla \mu(\psi_{q,t}(x), q)J_{q,t}(x)dq - \int_s^t \nabla \sigma(\psi_{q,t}(x), q)J_{s,t}(x) \circ dY_q \\
+  K_{s,t}(x)&:= J_{s,t}(x)^{-1} = \mathbb{I}^d + \int_s^t K_{q,t}(x) \nabla \mu(\psi_{q,t}(x), q) dq + \int_s^t K_{q,t}(x) \nabla \sigma(\psi_{q,t}(x), q) \circ dY_q
+\end{align}
+$$
+However, since the endpoint is non-deterministic, we need to compute the gradient by taking into account that the loss $\mathcal{L}$ is function of the stochastic process. \
+We define $A_{s,t}(x) = \partial \mathcal{L}(\phi_{s,t}(x)) / \partial x$ and, applying the chain rule, $A_{s,t}(x) = \nabla \mathcal{L}(\phi_{s,t}(x))\nabla \phi_{s,t}(x)$. \
+Analogously, we define $B_{s,t}(x):=A_{s,t}(\psi_{s,t}(x))$. With a bit of calculus, it turns out that:
+$$
+\begin{align}
+  B_{s,t}(x)  &= \nabla \mathcal{L} \cdot K_{s,t}(x) \\ 
+              &= \nabla \mathcal{L}(x) + \int_s^t \nabla \mu(\psi_{q,t}(x),q)^T B_{q,t}(x)dq + \int_s^t \nabla \sigma(\psi_{q,t}(x), x)^T B_{q,t}(x) \circ dY_q
+\end{align}
+$$
+This very last equation, with the backward SDE we defined above, constitutes the **adjoint system**, whose solution is the goal of stochastic adjoint methods. \
 
-
-### (Theory of) SDEs as Diffusion Limits of DGLMs
+The target is approximated by using two (deterministic) maps. \
+The forward pass is mapped by a function $G(x, \{W\}; \theta) \approx \phi_{0, T}(z) $, while the solution to the backward SDE is computed by a function $F(\phi, \{W\}; \omega) \approx B_{0, T}(x)$ so that $F(\phi, \{W\}; \omega) \approx F(G(x), \{W\})$.
 
 
 ## `code/` Structure
