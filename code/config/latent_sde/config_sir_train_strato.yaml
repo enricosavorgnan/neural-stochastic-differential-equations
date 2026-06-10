@@ -1,23 +1,23 @@
-model : "./code/models/lorenz/sde_lorenz_time_06-09_23-51_iter_1360-2000.pt"
-checkpoint :  1360
+# model : "./code/models/sir/"
+checkpoint :  0
 
 sde :
   name : lorenz
   system : StochasticLorenz
-  sde_type : "ito"
+  sde_type : "stratonovich"
 
   t_span : [0., 3.]
   dt : 0.01
   noise_type: "diagonal"
   noise_std : 0.01
 
-  method : "euler"
+  method : "euler_heun"
   adjoint : True
   levy_area : "space-time"
 
-  x0_type: "random"             # Default "random". Adapt if the model trained is used as a checkpoint for further training.
-  x0_std: [ 1., 1., 1. ]                  # Default 1. Adapt if the model trained is used as a checkpoint for further training.
-  x0_mean: [ 0.,0., 0. ]           # Default 0. Adapt if the model trained is used as a checkpoint for further training.
+  x0_type : "constant"             # Default "random". Adapt if the model trained is used as a checkpoint for further training.
+  x0_std : [1, 1]                  # Default 1. Adapt if the model trained is used as a checkpoint for further training.
+  x0_mean : [0.99, 0.01]           # Default 0. Adapt if the model trained is used as a checkpoint for further training.
 
 
 size :

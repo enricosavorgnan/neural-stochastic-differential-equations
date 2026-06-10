@@ -26,7 +26,7 @@
 if [ -n "$SLURM_SUBMIT_DIR" ]; then
     cd "$SLURM_SUBMIT_DIR"
 else
-    cd "$(dirname "$0")/../.."
+    cd "$(dirname "$0")/../../.."
 fi
 
 echo "Working directory set to: $(pwd)"
@@ -46,8 +46,8 @@ fi
 # CONFIGURATION & JOB EXECUTION
 # ==============================================================================
 
-# 1) Lorenz Model config
-CONFIG_FILE="code/config/latent_sde/config_lorenz.yaml"
+# 1) Climate Model config
+CONFIG_FILE="code/config/latent_sde/config_climate_plot.yaml"
 
 echo "Training model using configuration: ${CONFIG_FILE}"
 
