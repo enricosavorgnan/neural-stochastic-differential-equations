@@ -21,7 +21,7 @@ The encoder takes in input a whole *flipped* (from the end to the beginning) tra
 The information is then used to reconstruct the mean and the variance of the posterior gaussian distribution.
 Stochastic Adjoint methods are then run to compute the gradients of the loss function, which is the Evidence Lower Bound (ELBO) of the model. \
 The call to adjoint methods consists of two steps: a forward flow, which allows for the computation of a latent variables' trajectory, then used to reconstruct the observed variable by feeding the decoder module, and a backward flow, where the adjoint dynamics is actually computed. \
-The forward flow also computes the (path-wise) KL divergence (*Radon-Nikodym derivative*) between the paths of the posterior SDE and the prior SDE; this divergence is then added to the KL divergence computed between the prior and posterior distributions in order to compute the loss. \
+The forward flow also computes the (path-wise) KL divergence (*Radon-Nikodym derivative*) between the paths of the posterior SDE and the prior SDE; this divergence is then added to the KL divergence computed between the prior and posterior distributions in order to compute the loss. 
 
 The loss is parameterized by both the parameters of the prior distribution, of the posterior one and by the parameters of the SDEs deriving by the use of adjoints methods.
 
@@ -57,7 +57,7 @@ Keeping this formulation in mind, by applying the Gibbs' variational principle w
 $$
   -\log \mathbb{P}_\theta[Y] = \inf_{\nu \in \mathcal{P}(\mathbf{W})} \big\{\text{ KL}(\nu || \mathbb{Q}) - \int_{\mathbf{W}} \log \mathbb{P}_\theta \big[Y | f_1(W, \theta)\big] \nu(dW) \big \}
 $$
-Moreover, the Girsanov's Theorem states that in well-behaved scenario, like the ones in which we are usually involved in, then the KL divergence has a closed form solution, so that we can rewrite the ELBO as:
+Moreover, the Girsanov's Theorem states that in well-behaved scenarios, like the ones in which we are usually involved in, then the KL divergence has a closed form solution, so that we can rewrite the ELBO as:
 $$
   -\log \mathbb{P}_\theta[Y] = \inf_{u} \mathbb{E}_{\mathbb{Q}} \big\{\frac{1}{2}\int_0^1 ||u_t||^2 dt - \log \mathbb{P}_\theta \big[Y | Z_{(\cdot)} \big] \big\},
 $$
@@ -135,7 +135,7 @@ The forward pass is mapped by a function $G(x, \{W\}; \theta) \approx \phi_{0, T
 
 - `latent_sde.py`: \
   Here is where things become intriguing. 
-  The file implements a Latent Stochastic Differential Equation, i.e., a Deep Latent Gaussian Model aiming to reconstruct drift and diffusion processes of given SDE. 
+  The file implements a Latent Stochastic Differential Equations to reconstruct drift and diffusion processes of given SDE. 
   Some examples of valid SDE are implemented in `systems.py` file, as we will discuss below.
 
   As discussed in *Li et al., 2019*, the DLGM trains *jointly* the prior and the posterior SDEs, allowing to write a close form for the ELBO, i.e., for the loss to optimize.
