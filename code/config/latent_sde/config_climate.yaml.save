@@ -1,0 +1,55 @@
+# model : "./code/models/"
+checkpoint :  0
+
+sde :
+  name : climate
+  system : ClimateModel
+  sde_type : "stratonovich"
+
+  t_span : [0., 250.]
+  dt : 0.1
+  noise_type: "diagonal"
+  noise_std : 1
+
+  method : "euler_heun"
+  adjoint : True
+  levy_area : 'space-time'
+
+
+size :
+  data_size : 1
+  dataset_size : 5
+  batch_size : 16                # Default 1024
+  latent_size : 4
+  context_size : 64
+  hidden_size : 128
+
+
+training :
+  n_iters : 2000
+  pause : 20
+  device : cpu
+  optimizer : adam
+
+  lr_scheduler : exponential
+  lr_init : 0.01
+  lr_gamma : 0.997
+  lr_step_size : 2
+
+  kl_scheduler : linear
+  kl_iters : 1000
+
+
+save:
+  model : True
+  model_every : 20
+  plot : True
+  data : True
+  n_samples : 2
+
+path:
+  data : "./code/data/climate/"
+  model : "./code/models/climate/"
+  plot : "./code/img/climate/"
+
+
