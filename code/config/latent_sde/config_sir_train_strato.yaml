@@ -1,0 +1,57 @@
+# model : "./code/models/sir/"
+checkpoint :  0
+
+sde :
+  name : lorenz
+  system : StochasticLorenz
+  sde_type : "stratonovich"
+
+  t_span : [0., 3.]
+  dt : 0.01
+  noise_type: "diagonal"
+  noise_std : 0.01
+
+  method : "euler_heun"
+  adjoint : True
+  levy_area : "space-time"
+
+  x0_type : "constant"             # Default "random". Adapt if the model trained is used as a checkpoint for further training.
+  x0_std : [1, 1]                  # Default 1. Adapt if the model trained is used as a checkpoint for further training.
+  x0_mean : [0.99, 0.01]           # Default 0. Adapt if the model trained is used as a checkpoint for further training.
+
+
+size :
+  data_size : 3
+  dataset_size : 5000
+  batch_size : 64
+  latent_size : 4
+  context_size : 64
+  hidden_size : 128
+
+
+training :
+  n_iters : 2000
+  pause : 20
+  device : cpu
+  optimizer : adam
+
+  lr_scheduler : exponential
+  lr_init : 0.01                   # Default 0.01. Adapt if the model trained is used as a checkpoint for further training.
+  lr_gamma : 0.997
+  lr_step_size : 2
+
+  kl_scheduler : linear
+  kl_iters : 1000                  # Default 350. Adapt if the model trained is used as a checkpoint for further training.
+
+
+save:
+  model : True
+  model_every : 20
+  plot : True
+  data : True
+  n_samples : 5
+
+path:
+  data : "./code/data/lorenz/"
+  model : "./code/models/lorenz/"
+  plot : "./code/img/lorenz/"

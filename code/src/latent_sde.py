@@ -14,7 +14,7 @@ import torchsde
 from torch.utils.data import TensorDataset, DataLoader
 
 import utils
-from systems import StochasticLorenz, ClimateModel
+from systems import StochasticLorenz, ClimateModel, SIRModel
 
 # Increase the stack recursion limit to avoid issues
 # with the adjoint method when using a large number of iterations or a complex model.
@@ -276,6 +276,9 @@ class LatentSDETrainer:
         self.method = config['sde']['method']
         self.adjoint = config['sde']['adjoint']
         self.levy_area_type = config['sde']['levy_area']
+        self.sde_x0_type = config['sde']['x0_type']
+        self.sde_x0_mean = config['sde']['x0_mean']
+        self.sde_x0_std = config['sde']['x0_std']
 
         self.data_size = config['size']['data_size']
         self.dataset_size = config['size']['dataset_size']
@@ -366,7 +369,10 @@ class LatentSDETrainer:
         """
         Generates synthetic data according to the specified SDE type and stores it in self.data.
         """
-        _X0 = torch.randn(self.dataset_size, self.data_size, device=self.device)
+        if self.sde_x0_type == 'constant':
+            _X0 = self.sde_x0_mean * torch.ones(self.dataset_size, self.data_size, device=self.device)
+        elif self.sde_x0_type == 'random':
+            _X0 = self.sde_x0_mean + torch.randn(self.dataset_size, self.data_size, device=self.device) * self.sde_x0_std
         ts = torch.linspace(self.t_span[0], self.t_span[1], steps=int((self.t_span[1] - self.t_span[0]) / self.dt), device=self.device)
         system_class = eval(self.sde_system)
         system = system_class(sde_type = self.sde_type)
