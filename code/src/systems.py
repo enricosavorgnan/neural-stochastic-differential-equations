@@ -128,7 +128,6 @@ class SIRModel:
         self.sigma = sigma
         self.beta = self.R0 * (self.gamma + self.mu)
 
-    @private
     def _project_simplex(self, x):
         """
         Vectorized projection onto the valid epidemiological simplex domain:

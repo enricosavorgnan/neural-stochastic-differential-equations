@@ -2,8 +2,8 @@
 checkpoint :  0
 
 sde :
-  name : climate
-  system : ClimateModel
+  name : sir
+  system : SIRModel
   sde_type : "ito"
 
   t_span : [0., 250.]
@@ -52,8 +52,8 @@ save:
   n_samples : 2
 
 path:
-  data : "./code/data/climate/"
-  model : "./code/models/climate/"
-  plot : "./code/img/climate/"
+  data : "./code/data/sir/"
+  model : "./code/models/sir/"
+  plot : "./code/img/sir/"
 
 

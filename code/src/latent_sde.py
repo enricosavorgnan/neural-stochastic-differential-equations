@@ -312,6 +312,9 @@ class LatentSDETrainer:
         self.model = config.get('model', None)
         self.checkpoint = int(config['checkpoint'])
 
+        self.sde_x0_mean = torch.tensor(self.sde_x0_mean, device=self.device)
+        self.sde_x0_std = torch.tensor(self.sde_x0_std, device=self.device)
+
         # Generate Data
         if not self.data:
             self.generate_data()

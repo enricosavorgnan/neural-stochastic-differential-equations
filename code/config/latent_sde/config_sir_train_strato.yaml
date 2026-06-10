@@ -2,8 +2,8 @@
 checkpoint :  0
 
 sde :
-  name : lorenz
-  system : StochasticLorenz
+  name : sir
+  system : SIRModel
   sde_type : "stratonovich"
 
   t_span : [0., 3.]
@@ -52,6 +52,6 @@ save:
   n_samples : 5
 
 path:
-  data : "./code/data/lorenz/"
-  model : "./code/models/lorenz/"
-  plot : "./code/img/lorenz/"
+  data : "./code/data/sir/"
+  model : "./code/models/sir/"
+  plot : "./code/img/sir/"
