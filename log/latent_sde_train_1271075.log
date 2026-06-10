@@ -1,0 +1,78 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Training model using configuration: code/config/latent_sde/config_climate.yaml
+samples done
+  0%|          | 0/2000 [00:00<?, ?it/s]  0%|          | 1/2000 [06:19<210:51:11, 379.73s/it]  0%|          | 2/2000 [11:29<187:49:17, 338.42s/it]
+  0%|          | 3/2000 [16:17<175:05:13, 315.63s/it]  0%|          | 3/2000 [16:59<188:34:27, 339.94s/it]
+Traceback (most recent call last):
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py", line 554, in <module>
+    sde.train()
+    ~~~~~~~~~^^
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py", line 522, in train
+    log_p_X, kl = self.latent_sde(X_batch, ts, noise_std = self.noise_std, adjoint = self.adjoint, method = self.method, dt = self.dt)
+                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/.venv/lib64/python3.13/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/.venv/lib64/python3.13/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py", line 228, in forward
+    X_distribution = torch.distributions.normal.Normal(loc=X_new, scale=noise_std)
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/.venv/lib64/python3.13/site-packages/torch/distributions/normal.py", line 66, in __init__
+    super().__init__(batch_shape, validate_args=validate_args)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/.venv/lib64/python3.13/site-packages/torch/distributions/distribution.py", line 77, in __init__
+    raise ValueError(
+    ...<5 lines>...
+    )
+ValueError: Expected parameter loc (Tensor of shape (2500, 16, 1)) of distribution Normal(loc: torch.Size([2500, 16, 1]), scale: torch.Size([2500, 16, 1])) to satisfy the constraint Real(), but found invalid values:
+tensor([[[nan],
+         [nan],
+         [nan],
+         ...,
+         [nan],
+         [nan],
+         [nan]],
+
+        [[nan],
+         [nan],
+         [nan],
+         ...,
+         [nan],
+         [nan],
+         [nan]],
+
+        [[nan],
+         [nan],
+         [nan],
+         ...,
+         [nan],
+         [nan],
+         [nan]],
+
+        ...,
+
+        [[nan],
+         [nan],
+         [nan],
+         ...,
+         [nan],
+         [nan],
+         [nan]],
+
+        [[nan],
+         [nan],
+         [nan],
+         ...,
+         [nan],
+         [nan],
+         [nan]],
+
+        [[nan],
+         [nan],
+         [nan],
+         ...,
+         [nan],
+         [nan],
+         [nan]]], grad_fn=<ViewBackward0>)
+Job completed successfully.
