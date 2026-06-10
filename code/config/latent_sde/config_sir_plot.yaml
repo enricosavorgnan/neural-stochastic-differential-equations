@@ -6,10 +6,10 @@ sde :
   system : SIRModel
   sde_type : "ito"
 
-  t_span : [0., 250.]
+  t_span : [0., 5.]
   dt : 0.1
   noise_type: "diagonal"
-  noise_std : 0.1
+  noise_std : 0.01
 
   method : "euler"
   adjoint : True
@@ -21,8 +21,8 @@ sde :
 
 
 size :
-  data_size : 1
-  dataset_size : 5
+  data_size : 2
+  dataset_size : 2
   batch_size : 8                # Default 1024
   latent_size : 4
   context_size : 16
