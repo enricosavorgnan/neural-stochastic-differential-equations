@@ -372,6 +372,7 @@ class LatentSDETrainer:
         """
         Generates synthetic data according to the specified SDE type and stores it in self.data.
         """
+        print(f"Generating data for SDE: {self.sde_system} with x0 type: {self.sde_x0_type}")
         if self.sde_x0_type == 'constant':
             _X0 = self.sde_x0_mean * torch.ones(self.dataset_size, self.data_size, device=self.device)
         elif self.sde_x0_type == 'random':

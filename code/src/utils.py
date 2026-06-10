@@ -122,15 +122,18 @@ def plot_2d_latent_sde(X_data, X_samples, plot_path, time, ts, name, n_samples):
     None
         Saves the plot as a PNG file in the specified directory.
     """
-    fig = plt.figure(figsize=(16, 9), dpi = 600)
+    # extract only n_samples trajectories from X_samples
+    X_samples = X_samples[:, :n_samples, :]
+
+    fig = plt.figure(figsize=(16, 9), dpi=600)
     grid = gs.GridSpec(1, 2)
-    ax0 = fig.add_subplot(grid[0, 0], projection='2d')
-    ax1 = fig.add_subplot(grid[0, 1], projection='2d')
+    ax0 = fig.add_subplot(grid[0, 0])
+    ax1 = fig.add_subplot(grid[0, 1])
 
     # Left plot: data.
-    z1, z2 = np.split(X_data.cpu().numpy(), indices_or_sections=3, axis=-1)
-    [ax0.plot(z1[:, i, 0], z2[:, i, 0]) for i in range(len(X_samples))]
-    ax0.scatter(z1[0, :len(X_samples), 0], z2[0, :len(X_samples), 0], marker='x')
+    z1, z2 = np.split(X_data.cpu().numpy(), indices_or_sections=2, axis=-1)
+    [ax0.plot(z1[:, i, 0], z2[:, i, 0]) for i in range(X_data.shape[1])]
+    ax0.scatter(z1[0, :X_data.shape[1], 0], z2[0, :X_data.shape[1], 0], marker='x')
     ax0.set_yticklabels([])
     ax0.set_xticklabels([])
 
@@ -141,10 +144,10 @@ def plot_2d_latent_sde(X_data, X_samples, plot_path, time, ts, name, n_samples):
     ylim = ax0.get_ylim()
 
     # Right plot: samples from learned model.
-    z1, z2 = np.split(X_samples, indices_or_sections=3, axis=-1)
+    z1, z2 = np.split(X_samples, indices_or_sections=2, axis=-1)
 
-    [ax1.plot(z1[:, i, 0], z2[:, i, 0]) for i in range(len(X_samples))]
-    ax1.scatter(z1[0, :len(X_samples), 0], z2[0, :len(X_samples), 0], marker='x')
+    [ax1.plot(z1[:, i, 0], z2[:, i, 0]) for i in range(X_samples.shape[1])]
+    ax1.scatter(z1[0, :X_samples.shape[1], 0], z2[0, :X_samples.shape[1], 0], marker='x')
     ax1.set_yticklabels([])
     ax1.set_xticklabels([])
     ax1.set_xlabel('$X_1$', labelpad=0., fontsize=16)
@@ -153,8 +156,9 @@ def plot_2d_latent_sde(X_data, X_samples, plot_path, time, ts, name, n_samples):
     ax1.set_xlim(xlim)
     ax1.set_ylim(ylim)
 
+    os.makedirs(plot_path, exist_ok=True)
     image_save_path = os.path.join(plot_path, f"plot_{name}_time_{time}.png")
-    plt.savefig(image_save_path)
+    plt.savefig(image_save_path, bbox_inches='tight')
     plt.close()
 
 

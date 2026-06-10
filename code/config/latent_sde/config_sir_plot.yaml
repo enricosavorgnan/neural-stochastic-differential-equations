@@ -2,8 +2,8 @@
 checkpoint :  0
 
 sde :
-  name : climate
-  system : ClimateModel
+  name : sir
+  system : SIRModel
   sde_type : "ito"
 
   t_span : [0., 250.]
@@ -22,7 +22,7 @@ sde :
 
 size :
   data_size : 1
-  dataset_size : 5000
+  dataset_size : 5
   batch_size : 8                # Default 1024
   latent_size : 4
   context_size : 16

@@ -25,8 +25,8 @@ size :
   dataset_size : 5000
   batch_size : 8                # Default 1024
   latent_size : 4
-  context_size : 16
-  hidden_size : 32
+  context_size : 32
+  hidden_size : 64
 
 
 training :
