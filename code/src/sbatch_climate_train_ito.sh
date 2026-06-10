@@ -12,7 +12,7 @@
 #SBATCH --cpus-per-task=16
 ## SBATCH --gres=gpu:1
 #SBATCH --mem=32G
-#SBATCH --time=00:10:00
+#SBATCH --time=02:00:00
 
 # ==============================================================================
 # ENVIRONMENT SETUP
@@ -46,14 +46,12 @@ fi
 # CONFIGURATION & JOB EXECUTION
 # ==============================================================================
 
-# 1) Lorenz Model config
-# CONFIG_FILE="code/config/latent_sde/config_lorenz.yaml"
-# 2) Climate Model config
-CONFIG_FILE="code/config/latent_sde/config_climate.yaml"
+# 1) Climate Model config
+CONFIG_FILE="code/config/latent_sde/config_climate_train_ito.yaml"
 
 echo "Training model using configuration: ${CONFIG_FILE}"
 
 # Run the training script.
-python -u code/src/latent_sde.py --config "${CONFIG_FILE}"
+python -u code/src/latent_sde.py --config "${CONFIG_FILE}" --train
 
 echo "Job completed successfully."

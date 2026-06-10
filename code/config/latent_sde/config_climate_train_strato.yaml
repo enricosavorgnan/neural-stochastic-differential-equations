@@ -11,9 +11,9 @@ sde :
   noise_type: "diagonal"
   noise_std : 0.1
 
-  method : 'euler_heun'
+  method : "euler_heun"
   adjoint : True
-  levy_area : 'space-time'
+  levy_area : "space-time"
 
 
 size :

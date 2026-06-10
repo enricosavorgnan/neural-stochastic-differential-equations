@@ -1,5 +1,5 @@
-model : "./code/models/lorenz/sde_lorenz_time_06-09_23-51_iter_1360-2000.pt"
-checkpoint :  1360
+# model : "./code/models/lorenz/sde_lorenz_time_06-09_23-51_iter_1360-2000.pt"
+checkpoint :  0
 
 sde :
   name : lorenz
@@ -11,9 +11,9 @@ sde :
   noise_type: "diagonal"
   noise_std : 0.01
 
-  method : 'euler'
+  method : "euler_heun"
   adjoint : True
-  levy_area : 'space-time'
+  levy_area : "space-time"
 
 
 size :
