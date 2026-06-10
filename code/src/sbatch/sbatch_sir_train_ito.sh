@@ -52,6 +52,6 @@ CONFIG_FILE="code/config/latent_sde/config_sir_train_ito.yaml"
 echo "Training model using configuration: ${CONFIG_FILE}"
 
 # Run the training script.
-python -u code/src/latent_sde.py --config "${CONFIG_FILE}"
+python -u code/src/latent_sde.py --config "${CONFIG_FILE}" --train
 
 echo "Job completed successfully."
