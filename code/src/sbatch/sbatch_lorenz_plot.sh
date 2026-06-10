@@ -12,7 +12,7 @@
 #SBATCH --cpus-per-task=16
 ## SBATCH --gres=gpu:1
 #SBATCH --mem=32G
-#SBATCH --time=02:00:00
+#SBATCH --time=00:10:00
 
 # ==============================================================================
 # ENVIRONMENT SETUP
@@ -26,7 +26,7 @@
 if [ -n "$SLURM_SUBMIT_DIR" ]; then
     cd "$SLURM_SUBMIT_DIR"
 else
-    cd "$(dirname "$0")/../.."
+    cd "$(dirname "$0")/../../.."
 fi
 
 echo "Working directory set to: $(pwd)"
@@ -47,11 +47,11 @@ fi
 # ==============================================================================
 
 # 1) Lorenz Model config
-CONFIG_FILE="code/config/latent_sde/config_lorenz_train_strato.yaml"
+CONFIG_FILE="code/config/latent_sde/config_lorenz.yaml"
 
 echo "Training model using configuration: ${CONFIG_FILE}"
 
 # Run the training script.
-python -u code/src/latent_sde.py --config "${CONFIG_FILE}" --train
+python -u code/src/latent_sde.py --config "${CONFIG_FILE}"
 
 echo "Job completed successfully."

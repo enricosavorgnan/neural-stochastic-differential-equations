@@ -26,7 +26,7 @@
 if [ -n "$SLURM_SUBMIT_DIR" ]; then
     cd "$SLURM_SUBMIT_DIR"
 else
-    cd "$(dirname "$0")/../.."
+    cd "$(dirname "$0")/../../.."
 fi
 
 echo "Working directory set to: $(pwd)"
