@@ -1,9 +1,34 @@
 # Neural Stochastic Differential Equations
 
-The repository is intended to provide code examples, papers and a summary about Neural SDE. 
+The repository is intended to provide code examples, papers and a summary about Neural SDE.
 
 
-### Code Structure
+## Introduction
+
+### Neural and Latent SDEs 
+In a glimpse, **Neural Stochastic Differential Equations** (Neural SDE) consist in SDE where both the drift and the diffusion term are parameterized by Neural Networks. \
+Formally, they can be seen as a *Deep Gaussian Latent Model* (DGLM) at the diffusion limit, i.e., with infinitely deep and having the maps from each layer to the following close to 0 (see next sections for more information). \
+Neural SDEs can be used as *continuisations* of DGLM, thus having a practical application in the modeling of time series and, clearly, of stochastic models. 
+
+The repository focuses on a particular application of Neural SDE, called **Latent SDE**, where the expressive power of SDE is used to learn (latent) continuous-time dynamics. \
+Both observed and latent variables are supposed to be subjected to white noise. 
+
+The model is actually a *Variational AutoEncoder* (VAE). \
+The encoder takes in input a whole *flipped* (from the end to the beginning) trajectory of the observed variables and extracts the information about it exploiting GRU layers (light-weight Recurrent Neural Networks). \
+The information is then used to reconstruct the mean and the variance of the prior gaussian distribution.
+Stochastic Adjoint methods are then run to compute the gradients of the loss function, which is the Evidence Lower Bound (ELBO) of the model. \
+Adjoint methods also allow the computation of a latent variables' trajectory, which is then used to reconstruct the observed variable by feeding the decoder module. 
+
+The loss takes into account both the reconstruction error and the likelihood of the obtained trajectory. It is parameterized by both the parameters of the prior distribution, of the posterior one and by the parameters of the SDEs deriving by the use of adjoints methods.
+
+
+### Stochastic Adjoint Methods
+
+
+### (Theory of) SDEs as Diffusion Limits of DGLMs
+
+
+## `code/` Structure
 ```aiignore
 ├── docs/                  # Papers, slides and other resources
 ├── code/                  # Code
@@ -49,7 +74,7 @@ The repository is intended to provide code examples, papers and a summary about 
 
 
 
-### References
+## References
 
 - The main paper references are:
   - **Tzen, Raginsky**, *Neural Stochastic Differential Equations: Deep Latent Gaussian Models in the Diffusion Limit*, 2019
