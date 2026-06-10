@@ -15,6 +15,10 @@ sde :
   adjoint : True
   levy_area : "space-time"
 
+  x0_type: "random"             # Default "random". Adapt if the model trained is used as a checkpoint for further training.
+  x0_std: 1                 # Default 1. Adapt if the model trained is used as a checkpoint for further training.
+  x0_mean: 0          # Default 0. Adapt if the model trained is used as a checkpoint for further training.
+
 
 size :
   data_size : 1

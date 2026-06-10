@@ -47,7 +47,7 @@ fi
 # ==============================================================================
 
 # 1) Lorenz Model config
-CONFIG_FILE="code/config/latent_sde/config_lorenz.yaml"
+CONFIG_FILE="code/config/latent_sde/config_lorenz_plot.yaml"
 
 echo "Training model using configuration: ${CONFIG_FILE}"
 

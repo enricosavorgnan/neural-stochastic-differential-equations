@@ -47,7 +47,7 @@ fi
 # ==============================================================================
 
 # 1) Climate Model config
-CONFIG_FILE="code/config/latent_sde/config_climate.yaml"
+CONFIG_FILE="code/config/latent_sde/config_climate_plot.yaml"
 
 echo "Training model using configuration: ${CONFIG_FILE}"
 
