@@ -211,7 +211,7 @@ class LatentSDE(nn.Module):
                     tuple(self.drift_prior.parameters()) +
                     tuple(self.diffusion.parameters())
                 )
-            Z, log_ratio = torchsde.sdeint_adjoint(sde=self,
+            Z, pathwise_kl = torchsde.sdeint_adjoint(sde=self,
                                                    y0=z0,
                                                    ts=ts,
                                                    adjoint_params=params,
@@ -219,7 +219,7 @@ class LatentSDE(nn.Module):
                                                    logqp=True,
                                                    method=method)
         else:
-            Z, log_ratio = torchsde.sdeint(sde=self, y0=z0, ts=ts, dt=dt, logqp=True, method=method)
+            Z, pathwise_kl = torchsde.sdeint(sde=self, y0=z0, ts=ts, dt=dt, logqp=True, method=method)
 
         # Decode starting from the solved SDE
         X_new = self.decoder(Z)
@@ -231,9 +231,9 @@ class LatentSDE(nn.Module):
         qz0 = torch.distributions.normal.Normal(loc=qz0_mean, scale=qz0_log_std.exp())
         pz0 = torch.distributions.normal.Normal(loc=self.pz0_mean, scale=self.pz0_log_std.exp())
 
-        kl = torch.distributions.kl_divergence(qz0, pz0).sum(dim=1).mean(dim=0)
-        path = log_ratio.sum(dim=0).mean(dim=0)
-        return log_p_X, kl + path
+        distribution_kl = torch.distributions.kl_divergence(qz0, pz0).sum(dim=1).mean(dim=0)
+        path_kl = pathwise_kl.sum(dim=0).mean(dim=0)
+        return log_p_X, distribution_kl + path_kl
 
 
     def sample(self, batch_size, ts, brownian_motion=None, dt=0.01):
@@ -369,7 +369,7 @@ class LatentSDETrainer:
         _X0 = torch.randn(self.dataset_size, self.data_size, device=self.device)
         ts = torch.linspace(self.t_span[0], self.t_span[1], steps=int((self.t_span[1] - self.t_span[0]) / self.dt), device=self.device)
         system_class = eval(self.sde_system)
-        system = system_class()
+        system = system_class(sde_type = self.sde_type)
         X = system.sample(x0=_X0, ts=ts, noise_std=self.noise_std, method=self.method, normalize=True)
 
         self.data = (X, ts)

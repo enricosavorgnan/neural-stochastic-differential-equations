@@ -4,7 +4,7 @@ checkpoint :  1360
 sde :
   name : lorenz
   system : StochasticLorenz
-  sde_type : ito
+  sde_type : "stratonovich"
 
   t_span : [0., 3.]
   dt : 0.01

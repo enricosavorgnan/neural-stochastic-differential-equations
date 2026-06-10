@@ -14,10 +14,10 @@ class StochasticLorenz:
     Details described in Section 7.2 https://arxiv.org/pdf/2001.01328.pdf
     Default a, b from https://openreview.net/pdf?id=HkzRQhR9YX
     """
-    noise_type = "diagonal"
-    sde_type = "ito"
 
-    def __init__(self, a: Sequence = (10., 28., 8 / 3), b: Sequence = (.1, .28, .3)):
+    def __init__(self, sde_type : str = "ito", noise_type : str = "diagonal", a: Sequence = (10., 28., 8 / 3), b: Sequence = (.1, .28, .3)):
+        self.sde_type = sde_type
+        self.noise_type = noise_type
         self.a = a
         self.b = b
 
@@ -58,10 +58,10 @@ class ClimateModel:
 
     Parameters values from the same paper
     """
-    noise_type = "diagonal"
-    sde_type = "ito"
 
-    def __init__(self, a : float = 1, b : float = 0.1, omega : float = 0.1, epsilon : float = 0.53):
+    def __init__(self, sde_type : str = "ito", noise_type : str = "diagonal", a : float = 1, b : float = 0.1, omega : float = 0.1, epsilon : float = 0.53):
+        self.sde_type = sde_type
+        self.noise_type = noise_type
         self.a = a
         self.b = b
         self.omega = omega

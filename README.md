@@ -17,12 +17,19 @@ The model is actually a *Variational AutoEncoder* (VAE). \
 The encoder takes in input a whole *flipped* (from the end to the beginning) trajectory of the observed variables and extracts the information about it exploiting GRU layers (light-weight Recurrent Neural Networks). \
 The information is then used to reconstruct the mean and the variance of the prior gaussian distribution.
 Stochastic Adjoint methods are then run to compute the gradients of the loss function, which is the Evidence Lower Bound (ELBO) of the model. \
-Adjoint methods also allow the computation of a latent variables' trajectory, which is then used to reconstruct the observed variable by feeding the decoder module. 
+Adjoint methods also allow the computation of a latent variables' trajectory, which is then used to reconstruct the observed variable by feeding the decoder module. \
+Adjoints also compute the (path-wise) KL divergence (*Radon-Nikodym derivative*) between the paths of the posterior SDE and the prior SDE; this divergence is then added to the KL divergence computed between the prior and posterior distributions in order to compute the loss. \
 
-The loss takes into account both the reconstruction error and the likelihood of the obtained trajectory. It is parameterized by both the parameters of the prior distribution, of the posterior one and by the parameters of the SDEs deriving by the use of adjoints methods.
+The loss is parameterized by both the parameters of the prior distribution, of the posterior one and by the parameters of the SDEs deriving by the use of adjoints methods.
 
 
 ### Stochastic Adjoint Methods
+Stochastic adjoint methods have been developed in *Li et al.*, *2020*, and are a stochastic extension of the ordinary adjoint methods used to solve Neural and Latent ODEs. \
+The deterministic version consisted into the integration of a backward ODE, so to efficiently compute the gradients of loss with respect to the neural network and ODEs parameters.
+
+The stochastic version is, at the core, pretty similar. \
+It exploits a Stratonovich formulation of the 
+
 
 
 ### (Theory of) SDEs as Diffusion Limits of DGLMs
