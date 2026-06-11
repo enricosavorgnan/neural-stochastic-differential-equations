@@ -32,7 +32,7 @@ size :
 training :
   n_iters : 2000
   pause : 5
-  device : cuda
+  device : cpu
   optimizer : adam
 
   lr_scheduler : exponential
