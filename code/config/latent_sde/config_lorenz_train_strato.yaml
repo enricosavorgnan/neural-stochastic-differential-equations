@@ -1,5 +1,5 @@
-model : "./code/models/lorenz/sde_lorenz_time_06-10_16-00_iter_220-2000.pt"
-checkpoint :  0
+model : "./code/models/lorenz/sde_lorenz_time_06-10_20-07_iter_620-2000.pt"
+checkpoint :  620
 
 sde :
   name : lorenz

@@ -25,13 +25,13 @@ size :
   dataset_size : 5000
   batch_size : 64
   latent_size : 4
-  context_size : 32
-  hidden_size : 64
+  context_size : 16
+  hidden_size : 32
 
 
 training :
   n_iters : 2000
-  pause : 20
+  pause : 5
   device : cpu
   optimizer : adam
 
@@ -46,7 +46,7 @@ training :
 
 save:
   model : True
-  model_every : 20
+  model_every : 5
   plot : True
   data : True
   n_samples : 5

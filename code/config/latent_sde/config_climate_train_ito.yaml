@@ -1,5 +1,5 @@
-model : "./code/models/climate/sde_climate_time_06-10_16-04_iter_20-2000.pt"
-checkpoint :  20
+model : "./code/models/climate/sde_climate_time_06-10_19-43_iter_100-2000.pt"
+checkpoint : 100
 
 sde :
   name : climate
@@ -31,7 +31,7 @@ size :
 
 training :
   n_iters : 2000
-  pause : 20
+  pause : 5
   device : cpu
   optimizer : adam
 
@@ -46,7 +46,7 @@ training :
 
 save:
   model : True
-  model_every : 20
+  model_every : 5
   plot : True
   data : True
   n_samples : 2
