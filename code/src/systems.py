@@ -1,6 +1,7 @@
 """
 Implementation of several types of SDE compatible with the LatentSDE module.
 """
+from __future__ import annotations
 import torch
 import torchsde
 

@@ -32,18 +32,13 @@ if [ ! -d ".venv" ]; then
     echo "Virtual environment not found. Creating .venv..."
     # Create venv. We use python3 to ensure it uses the module loaded by the cluster.
     python3 -m venv .venv
+    python -m ensurepip --upgrade --default-pip
+    python -m pip install --quiet --upgrade pip
+    python -m pip install --quiet -r code/src/requirements.txt
 fi
 
 echo "Activating virtual environment from .venv..."
 source .venv/bin/activate
-
-# 3. Bulletproof Package Installation
-# Force installation of pip just in case the cluster's venv command omitted it
-python -m ensurepip --upgrade --default-pip
-
-# Always use 'python -m pip' instead of 'pip' to prevent path conflicts
-python -m pip install --quiet --upgrade pip
-python -m pip install --quiet -r code/src/requirements.txt
 
 # ==============================================================================
 # CONFIGURATION & JOB EXECUTION

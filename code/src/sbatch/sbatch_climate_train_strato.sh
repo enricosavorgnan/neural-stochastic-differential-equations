@@ -18,11 +18,6 @@
 # ENVIRONMENT SETUP
 # ==============================================================================
 
-# 1. Load system modules (Check if they are needed!)
-# module load cuda/11.8
-# module load python/3.10
-
-# 2. Navigate to the repository root directory
 if [ -n "$SLURM_SUBMIT_DIR" ]; then
     cd "$SLURM_SUBMIT_DIR"
 else
@@ -31,19 +26,18 @@ fi
 
 echo "Working directory set to: $(pwd)"
 
-# 3. Activate the virtual environment (.venv)
-if [ -d ".venv" ]; then
-    echo "Activating virtual environment from .venv..."
-    source .venv/bin/activate
-elif [ -d "venv" ]; then
-    echo "Activating virtual environment from venv..."
-    source venv/bin/activate
-else
-    echo "Virtual environment not found. Creating .venv and installing requirements..."
+# 2. Activate or Create the virtual environment
+if [ ! -d ".venv" ]; then
+    echo "Virtual environment not found. Creating .venv..."
+    # Create venv. We use python3 to ensure it uses the module loaded by the cluster.
     python3 -m venv .venv
-    source .venv/bin/activate
-    pip install --quiet -r code/src/requirements.txt
+    python -m ensurepip --upgrade --default-pip
+    python -m pip install --quiet --upgrade pip
+    python -m pip install --quiet -r code/src/requirements.txt
 fi
+
+echo "Activating virtual environment from .venv..."
+source .venv/bin/activate
 
 # ==============================================================================
 # CONFIGURATION & JOB EXECUTION
