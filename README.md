@@ -27,6 +27,7 @@ The loss is parameterized by both the parameters of the prior distribution, of t
 
 ### SDEs as Diffusion Limits of DLGMs
 DLGMs are discrete-time Markov chains:
+
 $$
 \begin{align}
 X_0 &= Z_0 \\
@@ -34,8 +35,10 @@ X_t &= X_{t-1} + \mu_t(X_{t-1}; \theta) + \sigma_t(X_{t-1}; \theta)Z_t = f_\thet
 Y & \sim \mathbb{P}[ \cdot | X_k],
 \end{align}
 $$
+
 where $Z_{(\cdot)} \sim \mathcal{N}(0, \mathbb{I}^d)$, Xs are latent variables and Y is the observed.
 At the diffusion limit, DLGMs read as an Ito's SDE:
+
 $$
 dX_t = \mu(X_t, t)dt + \sigma(X_t, t)dW_t \quad t \in [0, 1], dW_t \sim \mathcal{N}(0, dt)
 $$
