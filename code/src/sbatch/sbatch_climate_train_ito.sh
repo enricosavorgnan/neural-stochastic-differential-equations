@@ -34,6 +34,7 @@ echo "Working directory set to: $(pwd)"
 # 3. Activate the virtual environment (.venv)
 if [ -d ".venv" ]; then
     echo "Activating virtual environment from .venv..."
+    pip install --quiet -r code/src/requirements.txt
     source .venv/bin/activate
 elif [ -d "venv" ]; then
     echo "Activating virtual environment from venv..."
