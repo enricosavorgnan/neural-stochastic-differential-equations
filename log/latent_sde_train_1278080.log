@@ -1,0 +1,21 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Looking in links: /tmp/tmp6ddl_3nw
+Requirement already satisfied: setuptools in ./.venv/lib/python3.9/site-packages (53.0.0)
+Requirement already satisfied: pip in ./.venv/lib/python3.9/site-packages (26.0.1)
+
+[notice] A new release of pip is available: 26.0.1 -> 26.1.2
+[notice] To update, run: pip install --upgrade pip
+
+[notice] A new release of pip is available: 26.0.1 -> 26.1.2
+[notice] To update, run: pip install --upgrade pip
+Training model using configuration: code/config/latent_sde/config_climate_train_ito.yaml
+Traceback (most recent call last):
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py", line 17, in <module>
+    from systems import StochasticLorenz, ClimateModel, SIRModel
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/systems.py", line 93, in <module>
+    class SIRModel:
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/systems.py", line 119, in SIRModel
+    mu : float | int = 1/80/26,
+TypeError: unsupported operand type(s) for |: 'type' and 'type'
+Job completed successfully.

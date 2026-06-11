@@ -1,0 +1,38 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Training model using configuration: code/config/latent_sde/config_sir_train_ito.yaml
+Generating data for SDE: SIRModel with x0 type: constant
+samples done
+/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py:353: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  model_state_dict = torch.load(self.model, map_location=self.device)
+Model loaded from: ./code/models/sir/ito/sde_sir_time_06-11_16-16_iter_380-2000.pt
+Checkpoint at iteration 380 detected. Adjusting initial learning rate to 0.003193 to account for previous training.
+  0%|          | 0/1620 [00:00<?, ?it/s]  0%|          | 1/1620 [00:09<4:03:24,  9.02s/it]  0%|          | 2/1620 [00:17<3:48:37,  8.48s/it]  0%|          | 3/1620 [00:25<3:43:41,  8.30s/it]  0%|          | 4/1620 [00:33<3:41:19,  8.22s/it]Iter: 385/2000, 	Loss: 1333.9625, 	Log p(X): -1286.2866, 	KL: 123.8336
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_385-2000.pt
+  0%|          | 5/1620 [00:41<3:40:02,  8.17s/it]  0%|          | 6/1620 [00:49<3:39:09,  8.15s/it]  0%|          | 7/1620 [00:57<3:38:39,  8.13s/it]  0%|          | 8/1620 [01:05<3:38:14,  8.12s/it]  1%|          | 9/1620 [01:13<3:37:53,  8.12s/it]Iter: 390/2000, 	Loss: 678.8456, 	Log p(X): -613.4305, 	KL: 167.7310
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_390-2000.pt
+  1%|          | 10/1620 [01:21<3:37:38,  8.11s/it]  1%|          | 11/1620 [01:30<3:37:27,  8.11s/it]  1%|          | 12/1620 [01:38<3:38:10,  8.14s/it]  1%|          | 13/1620 [01:46<3:37:45,  8.13s/it]  1%|          | 14/1620 [01:54<3:37:36,  8.13s/it]Iter: 395/2000, 	Loss: 4.1507, 	Log p(X): 47.6979, 	KL: 131.2623
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_395-2000.pt
+  1%|          | 15/1620 [02:02<3:37:31,  8.13s/it]  1%|          | 16/1620 [02:10<3:37:20,  8.13s/it]  1%|          | 17/1620 [02:18<3:37:20,  8.14s/it]  1%|          | 18/1620 [02:26<3:37:05,  8.13s/it]  1%|          | 19/1620 [02:35<3:37:02,  8.13s/it]Iter: 400/2000, 	Loss: -92.6803, 	Log p(X): 172.9854, 	KL: 200.7628
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_400-2000.pt
+  1%|          | 20/1620 [02:43<3:36:51,  8.13s/it]  1%|▏         | 21/1620 [02:51<3:36:48,  8.14s/it]  1%|▏         | 22/1620 [02:59<3:36:47,  8.14s/it]  1%|▏         | 23/1620 [03:07<3:36:30,  8.13s/it]  1%|▏         | 24/1620 [03:15<3:36:13,  8.13s/it]Iter: 405/2000, 	Loss: -237.6589, 	Log p(X): 288.7994, 	KL: 126.2729
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_405-2000.pt
+  2%|▏         | 25/1620 [03:23<3:35:57,  8.12s/it]  2%|▏         | 26/1620 [03:32<3:35:44,  8.12s/it]  2%|▏         | 27/1620 [03:40<3:35:31,  8.12s/it]  2%|▏         | 28/1620 [03:48<3:36:06,  8.14s/it]  2%|▏         | 29/1620 [03:56<3:35:48,  8.14s/it]Iter: 410/2000, 	Loss: -111.2547, 	Log p(X): 147.5645, 	KL: 88.5604
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_410-2000.pt
+  2%|▏         | 30/1620 [04:04<3:35:26,  8.13s/it]  2%|▏         | 31/1620 [04:12<3:35:07,  8.12s/it]  2%|▏         | 32/1620 [04:20<3:34:47,  8.12s/it]  2%|▏         | 33/1620 [04:28<3:34:28,  8.11s/it]  2%|▏         | 34/1620 [04:36<3:34:17,  8.11s/it]Iter: 415/2000, 	Loss: -132.6523, 	Log p(X): 167.7581, 	KL: 84.5924
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_415-2000.pt
+  2%|▏         | 35/1620 [04:45<3:34:15,  8.11s/it]  2%|▏         | 36/1620 [04:53<3:34:05,  8.11s/it]  2%|▏         | 37/1620 [05:01<3:34:04,  8.11s/it]  2%|▏         | 38/1620 [05:09<3:33:58,  8.12s/it]  2%|▏         | 39/1620 [05:17<3:34:08,  8.13s/it]Iter: 420/2000, 	Loss: -210.1302, 	Log p(X): 242.6343, 	KL: 77.3909
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_420-2000.pt
+  2%|▏         | 40/1620 [05:25<3:33:55,  8.12s/it]  3%|▎         | 41/1620 [05:33<3:33:42,  8.12s/it]  3%|▎         | 42/1620 [05:41<3:33:31,  8.12s/it]  3%|▎         | 43/1620 [05:50<3:34:12,  8.15s/it]  3%|▎         | 44/1620 [05:58<3:33:46,  8.14s/it]Iter: 425/2000, 	Loss: -249.5267, 	Log p(X): 276.5068, 	KL: 63.4826
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_425-2000.pt
+  3%|▎         | 45/1620 [06:06<3:33:25,  8.13s/it]  3%|▎         | 46/1620 [06:14<3:33:03,  8.12s/it]  3%|▎         | 47/1620 [06:22<3:32:49,  8.12s/it]  3%|▎         | 48/1620 [06:30<3:32:33,  8.11s/it]  3%|▎         | 49/1620 [06:38<3:32:20,  8.11s/it]Iter: 430/2000, 	Loss: -246.4016, 	Log p(X): 283.5846, 	KL: 86.4721
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_430-2000.pt
+  3%|▎         | 50/1620 [06:46<3:32:10,  8.11s/it]  3%|▎         | 51/1620 [06:55<3:32:03,  8.11s/it]  3%|▎         | 52/1620 [07:03<3:31:58,  8.11s/it]  3%|▎         | 53/1620 [07:11<3:31:50,  8.11s/it]  3%|▎         | 54/1620 [07:19<3:31:43,  8.11s/it]Iter: 435/2000, 	Loss: -148.5028, 	Log p(X): 191.8178, 	KL: 99.5748
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_435-2000.pt
+  3%|▎         | 55/1620 [07:27<3:31:37,  8.11s/it]  3%|▎         | 56/1620 [07:35<3:31:30,  8.11s/it]  4%|▎         | 57/1620 [07:43<3:31:23,  8.11s/it]  4%|▎         | 58/1620 [07:51<3:31:15,  8.11s/it]  4%|▎         | 59/1620 [08:00<3:31:54,  8.14s/it]Iter: 440/2000, 	Loss: -327.4568, 	Log p(X): 366.4482, 	KL: 88.6168
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_440-2000.pt
+  4%|▎         | 60/1620 [08:08<3:31:29,  8.13s/it]  4%|▍         | 61/1620 [08:16<3:31:09,  8.13s/it]  4%|▍         | 62/1620 [08:24<3:30:49,  8.12s/it]  4%|▍         | 63/1620 [08:32<3:30:38,  8.12s/it]  4%|▍         | 64/1620 [08:40<3:30:24,  8.11s/it]Iter: 445/2000, 	Loss: -327.2164, 	Log p(X): 358.2255, 	KL: 69.6834
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_445-2000.pt
+  4%|▍         | 65/1620 [08:48<3:30:12,  8.11s/it]  4%|▍         | 66/1620 [08:56<3:30:02,  8.11s/it]  4%|▍         | 67/1620 [09:04<3:29:55,  8.11s/it]  4%|▍         | 68/1620 [09:12<3:29:49,  8.11s/it]  4%|▍         | 69/1620 [09:21<3:29:47,  8.12s/it]Iter: 450/2000, 	Loss: -259.6428, 	Log p(X): 312.4259, 	KL: 117.2956
+Model saved at: ./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_450-2000.pt
+  4%|▍         | 70/1620 [09:29<3:29:35,  8.11s/it]  4%|▍         | 71/1620 [09:37<3:29:25,  8.11s/it]slurmstepd: error: *** JOB 1278087 ON gpu002 CANCELLED AT 2026-06-11T23:00:16 DUE TO TIME LIMIT ***
