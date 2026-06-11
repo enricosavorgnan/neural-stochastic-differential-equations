@@ -65,13 +65,13 @@ with $\theta, \phi, \psi$ parameters, and $f_{(\cdot)}$ the mapping from $W_0$ t
 Keeping this formulation in mind, by applying the Gibbs' variational principle we can define a continuous form for the ELBO:
 
 $$
-  -\log \mathbb{P}_\theta[Y] = \inf_{\nu \in \mathcal{P}(\mathbf{W})} \big\{\text{ KL}(\nu || \mathbb{Q}) - \int_{\mathbf{W}} \log \mathbb{P}_\theta \big[Y | f_1(W, \theta)\big] \nu(dW) \big \}
+  -\log \mathbb{P}_\theta[Y] = \inf_{\nu \in \mathcal{P}(\mathbf{W})} \big\{\text{ KL}(\nu || \mathbb{Q}) - \int_{\mathbf{W}} \log \mathbb{P}_\theta \big[Y | f_1(W, \theta)\big] \nu(dW) \big] \}
 $$
 
 Moreover, the Girsanov's Theorem states that in well-behaved scenarios, like the ones in which we are usually involved in, then the KL divergence has a closed form solution, so that we can rewrite the ELBO as:
 
 $$
-  -\log \mathbb{P}_\theta[Y] = \inf_{u} \mathbb{E}_{\mathbb{Q}} \big\{\frac{1}{2}\int_0^1 ||u_t||^2 dt - \log \mathbb{P}_\theta \big[Y | Z_{(\cdot)} \big] \big\},
+  -\log \mathbb{P}_\theta [Y] = \inf_{u} \mathbb{E}_{\mathbb{Q}} \big{\frac{1}{2}\int_0^1 ||u_t||^2 dt - \log \mathbb{P}_\theta \big[Y | Z_{(\cdot)} \big] \big},
 $$
 
 where $u$ is defined as:
