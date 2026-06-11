@@ -53,11 +53,13 @@ The usual discrete approach requires $Z_i$ to be i.i.d.: here, it is required fo
 We can define a probability $\mathbb{Q}(dW)$ over the Wiener process, such that for each $0 < t_1 < t_2, \dots \leq 1$, $W_{t_i}-W_{t_{i-1}} \sim \mathcal{N}\big(0, (t_i-t_{i-1})\mathbb{I}_d \big)$.
 
 It can be shown that, if the neural mappings for $\mu$ and $\sigma$ are continuous, then they are measurable, and:
+
 $$
 \begin{equation}
 f_t(W;\psi) = \int_0^t \mu\big(f_s(W;\psi),s;\theta \big) ds + \int_0^t \sigma\big(f_r(W; \psi),r; \phi \big) dW_r, \label{eq:vi-path}
 \end{equation}
 $$
+
 with $\theta, \phi, \psi$ parameters, and $f_{(\cdot)}$ the mapping from $W_0$ to $W_{(\cdot)}$.
 
 Keeping this formulation in mind, by applying the Gibbs' variational principle we can define a continuous form for the ELBO:
