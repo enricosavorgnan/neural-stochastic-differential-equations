@@ -107,9 +107,10 @@ This very last equation, with the backward SDE we defined above, constitutes the
 The target is approximated by using two (deterministic) maps. \
 The forward pass is mapped by a function $G(x, \{W\}; \theta) \approx \phi_{0, T}(z) $, while the solution to the backward SDE is computed by a function $F(\phi, \{W\}; \omega) \approx B_{0, T}(x)$ so that $F(\phi, \{W\}; \omega) \approx F(G(x), \{W\})$. Those functions are, in practice, SDE solvers.
 
+---
 
 ## `code/` Structure
-```aiignore
+```
 ├── docs/                  # Papers, slides and other resources
 ├── code/                  # Code
     ├── config/            # Config YAML files
@@ -148,11 +149,9 @@ The forward pass is mapped by a function $G(x, \{W\}; \theta) \approx \phi_{0, T
   Contains different SDE models ready-to-use for training DLGMs, including:
   - **Lorenz Attractor**
   - **Climate Model** by Bezzi, Sutara, Vulpiani, Parisi, 1983
+  - **Stochastic SIR Model** by Tornatore, Buccellato, Vetro, 2005
 
-
-
-
-
+---
 
 ## References
 

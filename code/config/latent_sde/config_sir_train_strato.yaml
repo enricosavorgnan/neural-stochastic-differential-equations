@@ -7,9 +7,9 @@ sde :
   sde_type : "stratonovich"
 
   t_span : [0., 25.]
-  dt : 0.01
+  dt : 0.1
   noise_type: "diagonal"
-  noise_std : 0.01
+  noise_std : 0.1
 
   method : "euler_heun"
   adjoint : True
@@ -52,6 +52,6 @@ save:
   n_samples : 5
 
 path:
-  data : "./code/data/sir/"
-  model : "./code/models/sir/"
+  data : "./code/data/sir/strato"
+  model : "./code/models/sir/strato"
   plot : "./code/img/sir/"

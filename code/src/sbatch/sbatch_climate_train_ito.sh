@@ -18,7 +18,7 @@
 # ENVIRONMENT SETUP
 # ==============================================================================
 
-# 1. Load system modules (Check if they are needed!)
+# 1. Load system modules
 # module load cuda/11.8
 # module load python/3.10
 
@@ -34,8 +34,8 @@ echo "Working directory set to: $(pwd)"
 # 3. Activate the virtual environment (.venv)
 if [ -d ".venv" ]; then
     echo "Activating virtual environment from .venv..."
-    pip install --quiet -r code/src/requirements.txt
     source .venv/bin/activate
+    pip install --quiet -r code/src/requirements.txt
 elif [ -d "venv" ]; then
     echo "Activating virtual environment from venv..."
     source venv/bin/activate

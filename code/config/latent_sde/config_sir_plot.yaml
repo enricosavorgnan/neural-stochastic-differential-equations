@@ -1,5 +1,5 @@
-# model : "./code/models/"
-checkpoint :  0
+model : "./code/models/sir/sde_sir_time_06-11_16-16_iter_380-2000.pt"
+checkpoint :  380
 
 sde :
   name : sir
@@ -22,11 +22,11 @@ sde :
 
 size :
   data_size : 2
-  dataset_size : 2
+  dataset_size : 5
   batch_size : 8                # Default 1024
   latent_size : 4
-  context_size : 16
-  hidden_size : 32
+  context_size : 32
+  hidden_size : 64
 
 
 training :

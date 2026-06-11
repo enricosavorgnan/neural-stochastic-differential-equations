@@ -1,5 +1,5 @@
-model : "./code/models/climate/sde_climate_time_06-11_10-38_iter_320-2000.pt"
-checkpoint : 320
+model : "./code/models/climate/ito/sde_climate_time_06-11_10-38_iter_325-2000.pt"
+checkpoint : 325
 
 sde :
   name : climate
@@ -52,8 +52,8 @@ save:
   n_samples : 2
 
 path:
-  data : "./code/data/climate/"
-  model : "./code/models/climate/"
+  data : "./code/data/climate/ito/"
+  model : "./code/models/climate/ito/"
   plot : "./code/img/climate/"
 
 

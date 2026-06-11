@@ -1,5 +1,5 @@
-model : "./code/models/sir/sde_sir_time_06-11_10-34_iter_275-2000.pt"
-checkpoint : 275
+model : "./code/models/sir/ito/sde_sir_time_06-11_16-16_iter_380-2000.pt"
+checkpoint : 380
 
 sde :
   name : sir
@@ -52,8 +52,8 @@ save:
   n_samples : 2
 
 path:
-  data : "./code/data/sir/"
-  model : "./code/models/sir/"
+  data : "./code/data/sir/ito"
+  model : "./code/models/sir/ito"
   plot : "./code/img/sir/"
 
 

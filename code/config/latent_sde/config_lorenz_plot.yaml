@@ -1,17 +1,17 @@
-model : "./code/models/lorenz/sde_lorenz_time_06-09_23-51_iter_1360-2000.pt"
-checkpoint :  1360
+model : "./code/models/lorenz/sde_lorenz_time_06-11_10-29.pt"
+checkpoint :  0
 
 sde :
-  name : sir
-  system : SIRModel
-  sde_type : "ito"
+  name : lorenz
+  system : StochasticLorenz
+  sde_type : "stratonovich"
 
   t_span : [0., 3.]
   dt : 0.01
   noise_type: "diagonal"
   noise_std : 0.01
 
-  method : "euler"
+  method : "euler_heun"
   adjoint : True
   levy_area : "space-time"
 
@@ -22,7 +22,7 @@ sde :
 
 size :
   data_size : 3
-  dataset_size : 5000
+  dataset_size : 5
   batch_size : 64
   latent_size : 4
   context_size : 64
@@ -49,7 +49,7 @@ save:
   model_every : 20
   plot : True
   data : True
-  n_samples : 5
+  n_samples : 2
 
 path:
   data : "./code/data/lorenz/"
