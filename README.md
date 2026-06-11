@@ -2,11 +2,12 @@
 
 The repository is intended to provide code examples, papers and a summary about Neural SDE.
 
+---
 
 ## Introduction
 The following is a simple, hopefully user-friendly, introduction to the topic of Neural SDEs and their applications. \
 A more dense discussion is provided in `./docs/summary.pdf`. \
-The discussion is entirely based on the material shared in the [Reference](#references) section. 
+The discussion is entirely based on the material shared in the [References](#references) section. 
 
 ### Neural and Latent SDEs 
 In a glimpse, **Neural Stochastic Differential Equations** (Neural SDE) consist in SDE where both the drift and the diffusion term are parameterized by Neural Networks. \
@@ -27,6 +28,7 @@ The loss is parameterized by both the parameters of the prior distribution, of t
 
 ### SDEs as Diffusion Limits of DLGMs
 DLGMs are discrete-time Markov chains:
+
 $$
 \begin{align}
 X_0 &= Z_0 \\
@@ -34,8 +36,10 @@ X_t &= X_{t-1} + \mu_t(X_{t-1}; \theta) + \sigma_t(X_{t-1}; \theta)Z_t = f_\thet
 Y & \sim \mathbb{P}[ \cdot | X_k],
 \end{align}
 $$
+
 where $Z_{(\cdot)} \sim \mathcal{N}(0, \mathbb{I}^d)$, Xs are latent variables and Y is the observed.
 At the diffusion limit, DLGMs read as an Ito's SDE:
+
 $$
 dX_t = \mu(X_t, t)dt + \sigma(X_t, t)dW_t \quad t \in [0, 1], dW_t \sim \mathcal{N}(0, dt)
 $$
@@ -45,26 +49,38 @@ However, since we moved to a continuous setting, the common, discrete approach i
 We thus need to define a new, continuous variational inference scheme.
 
 The latent space is, in this new scenario, defined by the \textit{Wiener space} $\mathbf{W}$, meaning it is the space of continuous paths $w: [0, 1] \rightarrow \mathbb{R}^d$, whose primitive is the Wiener Process $W = \{W_t \}_{t \in [0,1]}$. \\
+
 The usual discrete approach requires $Z_i$ to be i.i.d.: here, it is required for each increment $dW_t = W_t-W_s$ to be independent to the previous ones. \\
 We can define a probability $\mathbb{Q}(dW)$ over the Wiener process, such that for each $0 < t_1 < t_2, \dots \leq 1$, $W_{t_i}-W_{t_{i-1}} \sim \mathcal{N}\big(0, (t_i-t_{i-1})\mathbb{I}_d \big)$.
+
 It can be shown that, if the neural mappings for $\mu$ and $\sigma$ are continuous, then they are measurable, and:
+
+$$
 \begin{equation}
-f_t(W;\psi) = \int_0^t \mu\big(f_s(W;\psi),s;\theta \big) ds + \int_0^t \sigma\big(f_r(W; \psi),r; \phi \big) dW_r, \label{eq:vi-path}
+f_t(W;\psi) = \int_0^t \mu\big(f_s(W;\psi),s;\theta \big) ds + \int_0^t \sigma\big(f_r(W; \psi),r; \phi \big) dW_r,
 \end{equation}
+$$
+
 with $\theta, \phi, \psi$ parameters, and $f_{(\cdot)}$ the mapping from $W_0$ to $W_{(\cdot)}$.
 
 Keeping this formulation in mind, by applying the Gibbs' variational principle we can define a continuous form for the ELBO:
+
 $$
-  -\log \mathbb{P}_\theta[Y] = \inf_{\nu \in \mathcal{P}(\mathbf{W})} \big\{\text{ KL}(\nu || \mathbb{Q}) - \int_{\mathbf{W}} \log \mathbb{P}_\theta \big[Y | f_1(W, \theta)\big] \nu(dW) \big \}
+  -\log \mathbb{P}_\theta[Y] = \inf_{\nu \in \mathcal{P}(\mathbf{W})} \{\text{ KL}(\nu \left|\right| \mathbb{Q}) - \int_{\mathbf{W}} \log \mathbb{P}_\theta \big[Y | f_1(W, \theta)\big] \nu(dW) \}
 $$
+
 Moreover, the Girsanov's Theorem states that in well-behaved scenarios, like the ones in which we are usually involved in, then the KL divergence has a closed form solution, so that we can rewrite the ELBO as:
+
 $$
-  -\log \mathbb{P}_\theta[Y] = \inf_{u} \mathbb{E}_{\mathbb{Q}} \big\{\frac{1}{2}\int_0^1 ||u_t||^2 dt - \log \mathbb{P}_\theta \big[Y | Z_{(\cdot)} \big] \big\},
+  -\log \mathbb{P}_\theta [Y] = \inf_{u} \mathbb{E}_{\mathbb{Q}} \{\frac{1}{2}\int_0^1 \left|\left|u_t\right|\right|^2 dt - \log \mathbb{P}_\theta \big[Y | Z_{(\cdot)} \big] \},
 $$
+
 where $u$ is defined as:
+
 $$
   u(z, t) = \sigma(z, t)^{-1} \big( h(x, t) - \tilde(x, t) \big)
 $$
+
 where $h, \tilde h$ are the drifts of the prior SDE and posterior SDE respectively.
 
 ### Stochastic Adjoint Methods
@@ -76,32 +92,40 @@ It exploits the symmetry of a Stratonovich SDE to compute a *backward* flow, i.e
 This inverse path is crucial since it allows the computation of the gradient of the loss w.r.t. the SDE parameters by integrating a new Stratonovich SDE. \
 To visualize the adjoint system solved, let's write down a bit of equations:
 - **Forward SDE**, the SDE ruling the observations:
+
 $$
   X_t:= \phi_{s,t}(x_s) = x_s + \int_s^t \mu(x_q, q)dq + \int_s^t \sigma(x_q, q) \circ dW_q,
 $$
+
   where $\mu$ represents the drift term, $\sigma$ the diffusion term, and $\{dW_q\}_{q=s:t}$ a realization of a Wiener process.
 - **Backward SDE**, valid in case of a (simple) invertibility condition:
+
 $$
   \psi_{s,t}(x_t) = x_t - \int_s^t \mu(\psi_{q,t}(x_t), q)dq - \int_s^t \sigma(\psi_{q,t}(x_t), q) \circ dY_q,
 $$
+
   where here $\{dY_q\}_{q=t:s}$ is exactly the inverted Wiener process previously identified as $\{dW_q\}_{q=s:t}$.
 
 Now we want to derive closed forms for the derivatives of the processes $\phi$ and $\psi$ with respect to the variables. Since Stratonovich SDEs allow the use of common calculus to compute the chain rule, we get:
+
 $$
 \begin{align}
   J_{s,t}(x)&:= \nabla_x \psi_{s,t}(x) = \mathbb{I}^d - \int_s^t \nabla \mu(\psi_{q,t}(x), q)J_{q,t}(x)dq - \int_s^t \nabla \sigma(\psi_{q,t}(x), q)J_{q,t}(x) \circ dY_q \\
   K_{s,t}(x)&:= J_{s,t}(x)^{-1} = \mathbb{I}^d + \int_s^t K_{q,t}(x) \nabla \mu(\psi_{q,t}(x), q) dq + \int_s^t K_{q,t}(x) \nabla \sigma(\psi_{q,t}(x), q) \circ dY_q
 \end{align}
 $$
+
 However, since the endpoint is non-deterministic, we need to compute the gradient by taking into account that the loss $\mathcal{L}$ is function of the stochastic process. \
 We define $A_{s,t}(x) = \partial \mathcal{L}(\phi_{s,t}(x)) / \partial x$ and, applying the chain rule, $A_{s,t}(x) = \nabla \mathcal{L}(\phi_{s,t}(x))\nabla \phi_{s,t}(x)$. \
 Analogously, we define $B_{s,t}(x):=A_{s,t}(\psi_{s,t}(x))$. With a bit of calculus, it turns out that:
+
 $$
 \begin{align}
   B_{s,t}(x)&= \nabla \mathcal{L} \cdot K_{s,t}(x) \\ 
             &= \nabla \mathcal{L}(x) + \int_s^t \nabla \mu(\psi_{q,t}(x),q)^T B_{q,t}(x)dq + \int_s^t \nabla \sigma(\psi_{q,t}(x), x)^T B_{q,t}(x) \circ dY_q
 \end{align}
 $$
+
 This very last equation, with the backward SDE we defined above, constitutes the **adjoint system**, whose solution is the goal of stochastic adjoint methods. 
 
 The target is approximated by using two (deterministic) maps. \
