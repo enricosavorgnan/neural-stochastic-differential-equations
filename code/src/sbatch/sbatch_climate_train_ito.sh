@@ -19,7 +19,8 @@
 # ==============================================================================
 
 # 1. Load system modules
-# module load cuda/11.8
+# IMPORTANT: On most SLURM clusters, you MUST load a Python module before interacting
+# with virtual environments. Uncomment and adjust the line below if your cluster requires it.
 # module load python/3.10
 
 # 2. Navigate to the repository root directory
@@ -31,7 +32,7 @@ fi
 
 echo "Working directory set to: $(pwd)"
 
-# 3. Activate the virtual environment (.venv)
+# 3. Activate the virtual environment and install dependencies
 if [ -d ".venv" ]; then
     echo "Activating virtual environment from .venv..."
     source .venv/bin/activate
@@ -60,6 +61,7 @@ CONFIG_FILE="code/config/latent_sde/config_climate_train_ito.yaml"
 echo "Training model using configuration: ${CONFIG_FILE}"
 
 # Run the training script.
+# The -u flag ensures Python output is unbuffered, saving your logs even if the job times out.
 python -u code/src/latent_sde.py --config "${CONFIG_FILE}" --train
 
 echo "Job completed successfully."
