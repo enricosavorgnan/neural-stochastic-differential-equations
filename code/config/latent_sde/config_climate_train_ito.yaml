@@ -1,4 +1,4 @@
-model : " ./code/models/climate/sde_climate_time_06-10_22-31_iter_285-2000.pt"
+model : "./code/models/climate/sde_climate_time_06-10_22-31_iter_285-2000.pt"
 checkpoint : 285
 
 sde :
