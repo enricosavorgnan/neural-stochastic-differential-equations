@@ -56,7 +56,7 @@ It can be shown that, if the neural mappings for $\mu$ and $\sigma$ are continuo
 
 $$
 \begin{equation}
-f_t(W;\psi) = \int_0^t \mu\big(f_s(W;\psi),s;\theta \big) ds + \int_0^t \sigma\big(f_r(W; \psi),r; \phi \big) dW_r, \label{eq:vi-path}
+f_t(W;\psi) = \int_0^t \mu\big(f_s(W;\psi),s;\theta \big) ds + \int_0^t \sigma\big(f_r(W; \psi),r; \phi \big) dW_r,
 \end{equation}
 $$
 
