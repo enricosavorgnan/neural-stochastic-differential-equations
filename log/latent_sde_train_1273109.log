@@ -1,0 +1,6 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Training model using configuration: code/config/latent_sde/config_sir_train_strato.yaml
+Generating data for SDE: SIRModel with x0 type: constant
+samples done
+  0%|          | 0/2000 [00:00<?, ?it/s]  0%|          | 1/2000 [06:31<217:15:06, 391.25s/it]slurmstepd: error: *** JOB 1273109 ON epyc007 CANCELLED AT 2026-06-10T22:39:45 DUE TO TIME LIMIT ***

@@ -1,0 +1,9 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Training model using configuration: code/config/latent_sde/config_lorenz_train_strato.yaml
+Generating data for SDE: StochasticLorenz with x0 type: random
+Model file: 
+./code/models/climate/sde_lorenz_time_06-10_16-00_iter_220-2000.pt
+ not found. 
+Exiting.
+Job completed successfully.

@@ -1,0 +1,24 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Training model using configuration: code/config/latent_sde/config_climate_train_ito.yaml
+Generating data for SDE: ClimateModel with x0 type: random
+samples done
+Model loaded from: ./code/models/climate/sde_climate_time_06-10_22-31_iter_285-2000.pt
+Checkpoint at iteration 285 detected. Adjusting initial learning rate to 0.004247 to account for previous training.
+  0%|          | 0/1715 [00:00<?, ?it/s]  0%|          | 1/1715 [01:15<36:03:08, 75.72s/it]  0%|          | 2/1715 [01:53<25:24:24, 53.39s/it]  0%|          | 3/1715 [03:22<33:08:05, 69.68s/it]  0%|          | 4/1715 [11:09<107:43:50, 226.67s/it]Iter: 290/2000, 	Loss: 7320.6006, 	Log p(X): -5995.5518, 	KL: 4569.1338
+Model saved at: ./code/models/climate/sde_climate_time_06-11_10-38_iter_290-2000.pt
+  0%|          | 5/1715 [12:53<86:38:56, 182.42s/it]   0%|          | 6/1715 [14:15<70:16:15, 148.03s/it]  0%|          | 7/1715 [19:00<91:36:34, 193.09s/it]  0%|          | 8/1715 [19:43<68:50:44, 145.19s/it]  1%|          | 9/1715 [20:34<54:51:35, 115.77s/it]Iter: 295/2000, 	Loss: 1291.7173, 	Log p(X): -129.7617, 	KL: 3938.8328
+Model saved at: ./code/models/climate/sde_climate_time_06-11_10-38_iter_295-2000.pt
+  1%|          | 10/1715 [21:17<44:06:12, 93.12s/it]  1%|          | 11/1715 [25:15<65:04:22, 137.48s/it]  1%|          | 12/1715 [27:36<65:36:45, 138.70s/it]  1%|          | 13/1715 [29:09<59:03:50, 124.93s/it]  1%|          | 14/1715 [29:50<47:00:02, 99.47s/it] Iter: 300/2000, 	Loss: 1802.0964, 	Log p(X): -696.9138, 	KL: 3683.9419
+Model saved at: ./code/models/climate/sde_climate_time_06-11_10-38_iter_300-2000.pt
+  1%|          | 15/1715 [31:40<48:31:32, 102.76s/it]  1%|          | 16/1715 [36:21<73:47:20, 156.35s/it]  1%|          | 17/1715 [37:03<57:27:25, 121.82s/it]  1%|          | 18/1715 [37:47<46:23:15, 98.41s/it]   1%|          | 19/1715 [38:31<38:38:59, 82.04s/it]Iter: 305/2000, 	Loss: 2156.9639, 	Log p(X): -894.2127, 	KL: 4140.1680
+Model saved at: ./code/models/climate/sde_climate_time_06-11_10-38_iter_305-2000.pt
+  1%|          | 20/1715 [39:15<33:17:48, 70.72s/it]  1%|          | 21/1715 [40:00<29:37:06, 62.94s/it]  1%|▏         | 22/1715 [40:45<27:03:50, 57.55s/it]  1%|▏         | 23/1715 [41:29<25:13:19, 53.66s/it]  1%|▏         | 24/1715 [43:05<31:08:01, 66.28s/it]Iter: 310/2000, 	Loss: 1653.2335, 	Log p(X): -410.0541, 	KL: 4010.2561
+Model saved at: ./code/models/climate/sde_climate_time_06-11_10-38_iter_310-2000.pt
+  1%|▏         | 25/1715 [43:43<27:04:29, 57.67s/it]  2%|▏         | 26/1715 [44:21<24:19:53, 51.86s/it]  2%|▏         | 27/1715 [45:03<23:00:23, 49.07s/it]  2%|▏         | 28/1715 [46:21<26:57:43, 57.54s/it]  2%|▏         | 29/1715 [47:16<26:41:54, 57.01s/it]Iter: 315/2000, 	Loss: 1158.8997, 	Log p(X): -42.7384, 	KL: 3543.3691
+Model saved at: ./code/models/climate/sde_climate_time_06-11_10-38_iter_315-2000.pt
+  2%|▏         | 30/1715 [48:57<32:50:54, 70.18s/it]  2%|▏         | 31/1715 [49:51<30:30:15, 65.21s/it]  2%|▏         | 32/1715 [55:45<70:55:07, 151.70s/it]  2%|▏         | 33/1715 [1:01:43<99:50:57, 213.71s/it]  2%|▏         | 34/1715 [1:08:23<125:57:50, 269.76s/it]Iter: 320/2000, 	Loss: 1237.3430, 	Log p(X): -153.0903, 	KL: 3388.2896
+Model saved at: ./code/models/climate/sde_climate_time_06-11_10-38_iter_320-2000.pt
+  2%|▏         | 35/1715 [1:13:52<134:09:38, 287.49s/it]  2%|▏         | 36/1715 [1:21:13<155:34:20, 333.57s/it]  2%|▏         | 37/1715 [1:28:19<168:20:27, 361.16s/it]  2%|▏         | 38/1715 [1:30:58<140:03:38, 300.67s/it]  2%|▏         | 39/1715 [1:37:39<153:56:18, 330.66s/it]Iter: 325/2000, 	Loss: 1150.9753, 	Log p(X): -17.3282, 	KL: 3488.1450
+Model saved at: ./code/models/climate/sde_climate_time_06-11_10-38_iter_325-2000.pt
+  2%|▏         | 40/1715 [1:43:17<154:54:13, 332.93s/it]  2%|▏         | 41/1715 [1:47:17<141:45:51, 304.87s/it]  2%|▏         | 42/1715 [1:55:46<170:08:17, 366.11s/it]slurmstepd: error: *** JOB 1275122 ON epyc006 CANCELLED AT 2026-06-11T12:37:17 DUE TO TIME LIMIT ***

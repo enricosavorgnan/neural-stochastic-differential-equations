@@ -1,0 +1,10 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Training model using configuration: code/config/latent_sde/config_climate_train_ito.yaml
+Generating data for SDE: ClimateModel with x0 type: random
+samples done
+Model file: 
+ ./code/models/climate/sde_climate_time_06-10_22-31_iter_285-2000.pt
+ not found. 
+Exiting.
+Job completed successfully.
