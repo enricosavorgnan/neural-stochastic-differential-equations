@@ -1,4 +1,4 @@
-matplotlib==3.10.9
+matplotlib==3.8.4
 numpy==2.4.6
 PyYAML==6.0.3
 torch==2.12.0
