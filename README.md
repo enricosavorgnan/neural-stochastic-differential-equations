@@ -2,6 +2,7 @@
 
 The repository is intended to provide code examples, papers and a summary about Neural SDE.
 
+---
 
 ## Introduction
 The following is a simple, hopefully user-friendly, introduction to the topic of Neural SDEs and their applications. \
