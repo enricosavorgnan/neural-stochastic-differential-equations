@@ -7,7 +7,7 @@ The repository is intended to provide code examples, papers and a summary about 
 ## Introduction
 The following is a simple, hopefully user-friendly, introduction to the topic of Neural SDEs and their applications. \
 A more dense discussion is provided in `./docs/summary.pdf`. \
-The discussion is entirely based on the material shared in the [Reference](#references) section. 
+The discussion is entirely based on the material shared in the [References](#references) section. 
 
 ### Neural and Latent SDEs 
 In a glimpse, **Neural Stochastic Differential Equations** (Neural SDE) consist in SDE where both the drift and the diffusion term are parameterized by Neural Networks. \
@@ -66,7 +66,7 @@ with $\theta, \phi, \psi$ parameters, and $f_{(\cdot)}$ the mapping from $W_0$ t
 Keeping this formulation in mind, by applying the Gibbs' variational principle we can define a continuous form for the ELBO:
 
 $$
-  -\log \mathbb{P}_\theta[Y] = \inf_{\nu \in \mathcal{P}(\mathbf{W})} {\text{ KL}(\nu || \mathbb{Q}) - \int_{\mathbf{W}} \log \mathbb{P}_\theta \big[Y | f_1(W, \theta)\big] \nu(dW) \}
+  -\log \mathbb{P}_\theta[Y] = \inf_{\nu \in \mathcal{P}(\mathbf{W})} \{\text{ KL}(\nu || \mathbb{Q}) - \int_{\mathbf{W}} \log \mathbb{P}_\theta \big[Y | f_1(W, \theta)\big] \nu(dW) \}
 $$
 
 Moreover, the Girsanov's Theorem states that in well-behaved scenarios, like the ones in which we are usually involved in, then the KL divergence has a closed form solution, so that we can rewrite the ELBO as:
