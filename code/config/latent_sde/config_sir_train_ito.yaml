@@ -1,5 +1,5 @@
-model : "./code/models/sir/sde_sir_time_06-11_08-13_iter_185-2000.pt"
-checkpoint : 185
+model : "./code/models/sir/sde_sir_time_06-11_10-34_iter_275-2000.pt"
+checkpoint : 275
 
 sde :
   name : sir
@@ -32,7 +32,7 @@ size :
 training :
   n_iters : 2000
   pause : 5
-  device : cpu
+  device : gpu
   optimizer : adam
 
   lr_scheduler : exponential
