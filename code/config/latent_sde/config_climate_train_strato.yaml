@@ -1,5 +1,5 @@
-model : "./code/models/climate/sde_climate_time_06-10_19-43_iter_120-2000.pt"
-checkpoint : 120
+model : "./code/models/climate/sde_climate_time_06-10_22-30_iter_240-2000.pt"
+checkpoint : 240
 
 sde :
   name : climate
