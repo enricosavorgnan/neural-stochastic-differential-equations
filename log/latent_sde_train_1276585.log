@@ -1,0 +1,13 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+
+[notice] A new release of pip is available: 24.2 -> 26.1.2
+[notice] To update, run: pip install --upgrade pip
+Training model using configuration: code/config/latent_sde/config_climate_train_ito.yaml
+Generating data for SDE: ClimateModel with x0 type: random
+samples done
+Model file: 
+./code/models/climate/sde_climate_time_06-11_10-38_iter_325-2000.pt
+ not found. 
+Exiting.
+Job completed successfully.

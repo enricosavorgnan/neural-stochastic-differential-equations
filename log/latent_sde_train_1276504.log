@@ -1,0 +1,12 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Traceback (most recent call last):
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/.venv/bin/pip", line 5, in <module>
+    from pip._internal.cli.main import main
+ModuleNotFoundError: No module named 'pip'
+Training model using configuration: code/config/latent_sde/config_climate_train_ito.yaml
+Traceback (most recent call last):
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py", line 6, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+Job completed successfully.

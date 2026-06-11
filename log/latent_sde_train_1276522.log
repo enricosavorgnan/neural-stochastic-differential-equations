@@ -1,0 +1,16 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+scikit-learn 1.4.1.post1 requires numpy<2.0,>=1.19.5, but you have numpy 2.4.6 which is incompatible.
+Training model using configuration: code/config/latent_sde/config_climate_train_ito.yaml
+Traceback (most recent call last):
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py", line 562, in <module>
+    sde = LatentSDETrainer(config_path=args.config)
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py", line 315, in __init__
+    self.sde_x0_mean = torch.tensor(self.sde_x0_mean, device=self.device)
+                       ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/.venv/lib64/python3.13/site-packages/torch/cuda/__init__.py", line 491, in _lazy_init
+    torch._C._cuda_init()
+    ~~~~~~~~~~~~~~~~~~~^^
+RuntimeError: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx
+Job completed successfully.

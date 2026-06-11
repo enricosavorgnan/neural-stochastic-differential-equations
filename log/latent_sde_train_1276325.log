@@ -1,0 +1,8 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+WARNING: Virtual environment (.venv/venv) not found at root! Using system python.
+Training model using configuration: code/config/latent_sde/config_climate_train_ito.yaml
+Traceback (most recent call last):
+  File "/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py", line 8, in <module>
+    import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+Job completed successfully.
