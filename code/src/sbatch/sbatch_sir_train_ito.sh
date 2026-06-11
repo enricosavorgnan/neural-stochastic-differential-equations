@@ -6,11 +6,11 @@
 
 #SBATCH --job-name=LatentSDE
 #SBATCH --output=log/latent_sde_train_%j.log
-#SBATCH --partition=GPU
+#SBATCH --partition=EPYC
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
-#SBATCH --gres=gpu:V100:1
+## SBATCH --gres=gpu:V100:1
 #SBATCH --mem=32G
 #SBATCH --time=00:10:00
 
