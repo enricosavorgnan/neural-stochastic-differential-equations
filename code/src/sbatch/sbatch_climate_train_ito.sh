@@ -18,12 +18,7 @@
 # ENVIRONMENT SETUP
 # ==============================================================================
 
-# 1. Load system modules
-# IMPORTANT: On most SLURM clusters, you MUST load a Python module before interacting
-# with virtual environments. Uncomment and adjust the line below if your cluster requires it.
-# module load python/3.10
-
-# 2. Navigate to the repository root directory
+# 1. Navigate to the repository root directory
 if [ -n "$SLURM_SUBMIT_DIR" ]; then
     cd "$SLURM_SUBMIT_DIR"
 else
@@ -32,24 +27,23 @@ fi
 
 echo "Working directory set to: $(pwd)"
 
-# 3. Activate the virtual environment and install dependencies
-if [ -d ".venv" ]; then
-    echo "Activating virtual environment from .venv..."
-    source .venv/bin/activate
-    pip install --quiet --upgrade pip
-    pip install --quiet -r code/src/requirements.txt
-elif [ -d "venv" ]; then
-    echo "Activating virtual environment from venv..."
-    source venv/bin/activate
-    pip install --quiet --upgrade pip
-    pip install --quiet -r code/src/requirements.txt
-else
-    echo "Virtual environment not found. Creating .venv and installing requirements..."
+# 2. Activate or Create the virtual environment
+if [ ! -d ".venv" ]; then
+    echo "Virtual environment not found. Creating .venv..."
+    # Create venv. We use python3 to ensure it uses the module loaded by the cluster.
     python3 -m venv .venv
-    source .venv/bin/activate
-    pip install --quiet --upgrade pip
-    pip install --quiet -r code/src/requirements.txt
 fi
+
+echo "Activating virtual environment from .venv..."
+source .venv/bin/activate
+
+# 3. Bulletproof Package Installation
+# Force installation of pip just in case the cluster's venv command omitted it
+python -m ensurepip --upgrade --default-pip
+
+# Always use 'python -m pip' instead of 'pip' to prevent path conflicts
+python -m pip install --quiet --upgrade pip
+python -m pip install --quiet -r code/src/requirements.txt
 
 # ==============================================================================
 # CONFIGURATION & JOB EXECUTION
