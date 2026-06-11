@@ -32,14 +32,17 @@ fi
 echo "Working directory set to: $(pwd)"
 
 # 3. Activate the virtual environment (.venv)
-if [ ! -d ".venv" ]; then
-    echo "Virtual environment not found. Creating .venv..."
-    python3 -m venv .venv
+if [ -d ".venv" ]; then
+    echo "Activating virtual environment from .venv..."
+    source .venv/bin/activate
 elif [ -d "venv" ]; then
     echo "Activating virtual environment from venv..."
     source venv/bin/activate
 else
-    echo "WARNING: Virtual environment (.venv/venv) not found at root! Using system python."
+    echo "Virtual environment not found. Creating .venv and installing requirements..."
+    python3 -m venv .venv
+    source .venv/bin/activate
+    pip install --quiet -r code/src/requirements.txt
 fi
 
 # ==============================================================================
