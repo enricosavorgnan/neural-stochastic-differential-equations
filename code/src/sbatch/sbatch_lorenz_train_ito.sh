@@ -32,9 +32,9 @@ fi
 echo "Working directory set to: $(pwd)"
 
 # 3. Activate the virtual environment (.venv)
-if [ -d ".venv" ]; then
-    echo "Activating virtual environment from .venv..."
-    source .venv/bin/activate
+if [ ! -d ".venv" ]; then
+    echo "Virtual environment not found. Creating .venv..."
+    python3 -m venv .venv
 elif [ -d "venv" ]; then
     echo "Activating virtual environment from venv..."
     source venv/bin/activate
