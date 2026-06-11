@@ -1,5 +1,0 @@
-Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
-Activating virtual environment from .venv...
-Training model using configuration: code/config/latent_sde/config_climate.yaml
-samples done
-  0%|          | 0/500 [00:00<?, ?it/s]slurmstepd: error: *** JOB 1269567 ON epyc005 CANCELLED AT 2026-06-09T21:55:41 DUE TO TIME LIMIT ***

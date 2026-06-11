@@ -1,4 +1,0 @@
-Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
-Activating virtual environment from .venv...
-Training model using configuration: code/config/latent_sde/config_lorenz_train_strato.yaml
-slurmstepd: error: *** JOB 1272893 ON epyc007 CANCELLED AT 2026-06-10T20:07:14 ***
