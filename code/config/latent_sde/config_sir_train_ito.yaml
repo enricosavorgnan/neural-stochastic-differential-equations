@@ -1,5 +1,5 @@
-model : "./code/models/sir/ito/sde_sir_time_06-11_22-50_iter_450-2000.pt"
-checkpoint : 450
+model : "./code/models/sir/ito/sde_sir_time_06-12_09-49_iter_1225-2000.pt"
+checkpoint : 1225
 
 sde :
   name : sir

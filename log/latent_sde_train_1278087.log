@@ -1,4 +1,4 @@
-Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Model saved at: ./code/models/climate/strato/sde_climate_time_06-11_21-39_iter_860-2000.ptWorking directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
 Activating virtual environment from .venv...
 Training model using configuration: code/config/latent_sde/config_sir_train_ito.yaml
 Generating data for SDE: SIRModel with x0 type: constant

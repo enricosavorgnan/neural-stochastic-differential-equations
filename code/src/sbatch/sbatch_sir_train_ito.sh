@@ -12,7 +12,7 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --gres=gpu:V100:1
 #SBATCH --mem=32G
-#SBATCH --time=00:10:00
+#SBATCH --time=02:00:00
 
 # ==============================================================================
 # ENVIRONMENT SETUP

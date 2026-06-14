@@ -1,4 +1,8 @@
 model : "./code/models/lorenz/sde_lorenz_time_06-11_10-29.pt"
+# Strato model:
+# ./code/models/lorenz/sde_lorenz_time_06-11_10-29.pt
+# Ito model
+# ./code/models/lorenz/sde_lorenz_time_06-10_16-00.pt
 checkpoint :  0
 
 sde :

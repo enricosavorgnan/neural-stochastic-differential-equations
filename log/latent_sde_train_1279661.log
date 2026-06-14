@@ -1,0 +1,69 @@
+Working directory set to: /orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde
+Activating virtual environment from .venv...
+Training model using configuration: code/config/latent_sde/config_climate_train_ito.yaml
+Generating data for SDE: ClimateModel with x0 type: random
+samples done
+/orfeo/cephfs/home/dssc/enricosavorgnan/2026-neural-sde/code/src/latent_sde.py:353: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  model_state_dict = torch.load(self.model, map_location=self.device)
+Model loaded from: ./code/models/climate/ito/sde_climate_time_06-12_18-28_iter_1860-2000.pt
+Checkpoint at iteration 1860 detected. Adjusting initial learning rate to 0.000037 to account for previous training.
+  0%|          | 0/140 [00:00<?, ?it/s]  1%|          | 1/140 [00:33<1:18:10, 33.74s/it]  1%|▏         | 2/140 [01:06<1:16:11, 33.13s/it]  2%|▏         | 3/140 [01:39<1:15:08, 32.91s/it]  3%|▎         | 4/140 [02:11<1:14:27, 32.85s/it]Iter: 1865/2000, 	Loss: 5864.3330, 	Log p(X): -1958.6094, 	KL: 3905.7236
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1865-2000.pt
+  4%|▎         | 5/140 [02:44<1:13:49, 32.81s/it]  4%|▍         | 6/140 [03:17<1:13:10, 32.76s/it]  5%|▌         | 7/140 [03:49<1:12:32, 32.72s/it]  6%|▌         | 8/140 [04:22<1:11:57, 32.71s/it]  6%|▋         | 9/140 [04:55<1:11:15, 32.64s/it]Iter: 1870/2000, 	Loss: 2151.5549, 	Log p(X): -341.6666, 	KL: 1809.8883
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1870-2000.pt
+  7%|▋         | 10/140 [05:27<1:10:35, 32.58s/it]  8%|▊         | 11/140 [05:59<1:09:54, 32.51s/it]  9%|▊         | 12/140 [06:32<1:09:15, 32.46s/it]  9%|▉         | 13/140 [07:04<1:08:38, 32.43s/it] 10%|█         | 14/140 [07:36<1:08:00, 32.38s/it]Iter: 1875/2000, 	Loss: 1797.9922, 	Log p(X): -280.3297, 	KL: 1517.6625
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1875-2000.pt
+ 11%|█         | 15/140 [08:09<1:07:20, 32.32s/it] 11%|█▏        | 16/140 [08:41<1:06:46, 32.31s/it] 12%|█▏        | 17/140 [09:13<1:06:12, 32.29s/it] 13%|█▎        | 18/140 [09:45<1:05:38, 32.29s/it] 14%|█▎        | 19/140 [10:18<1:05:07, 32.29s/it]Iter: 1880/2000, 	Loss: 2237.3413, 	Log p(X): -296.0690, 	KL: 1941.2723
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1880-2000.pt
+ 14%|█▍        | 20/140 [10:50<1:04:31, 32.27s/it] 15%|█▌        | 21/140 [11:22<1:03:57, 32.25s/it] 16%|█▌        | 22/140 [11:54<1:03:26, 32.26s/it] 16%|█▋        | 23/140 [12:27<1:02:54, 32.26s/it] 17%|█▋        | 24/140 [12:59<1:02:19, 32.24s/it]Iter: 1885/2000, 	Loss: 1869.1503, 	Log p(X): -87.7589, 	KL: 1781.3914
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1885-2000.pt
+ 18%|█▊        | 25/140 [13:31<1:01:51, 32.27s/it] 19%|█▊        | 26/140 [14:03<1:01:17, 32.26s/it] 19%|█▉        | 27/140 [14:36<1:00:45, 32.26s/it] 20%|██        | 28/140 [15:08<1:00:15, 32.28s/it] 21%|██        | 29/140 [15:40<59:41, 32.27s/it]  Iter: 1890/2000, 	Loss: 1470.7993, 	Log p(X): 74.1522, 	KL: 1544.9515
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1890-2000.pt
+ 21%|██▏       | 30/140 [16:12<59:08, 32.26s/it] 22%|██▏       | 31/140 [16:45<58:36, 32.26s/it] 23%|██▎       | 32/140 [17:17<58:03, 32.25s/it] 24%|██▎       | 33/140 [17:49<57:29, 32.24s/it] 24%|██▍       | 34/140 [18:21<57:00, 32.26s/it]Iter: 1895/2000, 	Loss: 1317.1268, 	Log p(X): -30.2618, 	KL: 1286.8650
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1895-2000.pt
+ 25%|██▌       | 35/140 [18:54<56:26, 32.25s/it] 26%|██▌       | 36/140 [19:26<55:53, 32.25s/it] 26%|██▋       | 37/140 [19:58<55:23, 32.27s/it] 27%|██▋       | 38/140 [20:31<54:52, 32.28s/it] 28%|██▊       | 39/140 [21:03<54:18, 32.27s/it]Iter: 1900/2000, 	Loss: 1543.9858, 	Log p(X): -349.3222, 	KL: 1194.6637
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1900-2000.pt
+ 29%|██▊       | 40/140 [21:35<53:48, 32.29s/it] 29%|██▉       | 41/140 [22:07<53:14, 32.27s/it] 30%|███       | 42/140 [22:40<52:42, 32.27s/it] 31%|███       | 43/140 [23:12<52:11, 32.29s/it] 31%|███▏      | 44/140 [23:44<51:37, 32.27s/it]Iter: 1905/2000, 	Loss: 1832.9055, 	Log p(X): -523.0833, 	KL: 1309.8223
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1905-2000.pt
+ 32%|███▏      | 45/140 [24:16<51:04, 32.26s/it] 33%|███▎      | 46/140 [24:49<50:35, 32.29s/it] 34%|███▎      | 47/140 [25:21<50:01, 32.27s/it] 34%|███▍      | 48/140 [25:53<49:27, 32.26s/it] 35%|███▌      | 49/140 [26:26<48:57, 32.28s/it]Iter: 1910/2000, 	Loss: 1529.1095, 	Log p(X): -152.1400, 	KL: 1376.9695
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1910-2000.pt
+ 36%|███▌      | 50/140 [26:58<48:23, 32.26s/it] 36%|███▋      | 51/140 [27:30<47:51, 32.26s/it] 37%|███▋      | 52/140 [28:02<47:20, 32.28s/it] 38%|███▊      | 53/140 [28:35<46:47, 32.27s/it] 39%|███▊      | 54/140 [29:07<46:14, 32.26s/it]Iter: 1915/2000, 	Loss: 1364.4052, 	Log p(X): 33.6082, 	KL: 1398.0134
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1915-2000.pt
+ 39%|███▉      | 55/140 [29:39<45:43, 32.27s/it] 40%|████      | 56/140 [30:11<45:10, 32.27s/it] 41%|████      | 57/140 [30:44<44:37, 32.26s/it] 41%|████▏     | 58/140 [31:16<44:06, 32.27s/it] 42%|████▏     | 59/140 [31:48<43:32, 32.25s/it]Iter: 1920/2000, 	Loss: 1416.3826, 	Log p(X): -67.1860, 	KL: 1349.1965
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1920-2000.pt
+ 43%|████▎     | 60/140 [32:20<42:59, 32.25s/it] 44%|████▎     | 61/140 [32:53<42:28, 32.26s/it] 44%|████▍     | 62/140 [33:25<41:56, 32.26s/it] 45%|████▌     | 63/140 [33:57<41:23, 32.25s/it] 46%|████▌     | 64/140 [34:29<40:52, 32.27s/it]Iter: 1925/2000, 	Loss: 1516.2058, 	Log p(X): -172.5858, 	KL: 1343.6200
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1925-2000.pt
+ 46%|████▋     | 65/140 [35:02<40:19, 32.26s/it] 47%|████▋     | 66/140 [35:34<39:47, 32.26s/it] 48%|████▊     | 67/140 [36:06<39:17, 32.29s/it] 49%|████▊     | 68/140 [36:39<38:43, 32.28s/it] 49%|████▉     | 69/140 [37:11<38:10, 32.26s/it]Iter: 1930/2000, 	Loss: 1407.5491, 	Log p(X): -155.6211, 	KL: 1251.9280
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1930-2000.pt
+ 50%|█████     | 70/140 [37:43<37:40, 32.29s/it] 51%|█████     | 71/140 [38:15<37:06, 32.27s/it] 51%|█████▏    | 72/140 [38:48<36:32, 32.24s/it] 52%|█████▏    | 73/140 [39:20<36:02, 32.27s/it] 53%|█████▎    | 74/140 [39:52<35:28, 32.25s/it]Iter: 1935/2000, 	Loss: 1345.5479, 	Log p(X): -22.3570, 	KL: 1323.1908
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1935-2000.pt
+ 54%|█████▎    | 75/140 [40:24<34:56, 32.25s/it] 54%|█████▍    | 76/140 [40:57<34:25, 32.27s/it] 55%|█████▌    | 77/140 [41:29<33:52, 32.26s/it] 56%|█████▌    | 78/140 [42:01<33:19, 32.24s/it] 56%|█████▋    | 79/140 [42:33<32:48, 32.27s/it]Iter: 1940/2000, 	Loss: 1305.1493, 	Log p(X): -1.0205, 	KL: 1304.1288
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1940-2000.pt
+ 57%|█████▋    | 80/140 [43:06<32:15, 32.26s/it] 58%|█████▊    | 81/140 [43:38<31:43, 32.26s/it] 59%|█████▊    | 82/140 [44:10<31:12, 32.28s/it] 59%|█████▉    | 83/140 [44:42<30:39, 32.27s/it] 60%|██████    | 84/140 [45:15<30:06, 32.26s/it]Iter: 1945/2000, 	Loss: 1658.8284, 	Log p(X): -221.4993, 	KL: 1437.3291
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1945-2000.pt
+ 61%|██████    | 85/140 [45:47<29:35, 32.28s/it] 61%|██████▏   | 86/140 [46:19<29:02, 32.26s/it] 62%|██████▏   | 87/140 [46:51<28:28, 32.24s/it] 63%|██████▎   | 88/140 [47:24<27:58, 32.28s/it] 64%|██████▎   | 89/140 [47:56<27:24, 32.25s/it]Iter: 1950/2000, 	Loss: 1540.6846, 	Log p(X): -172.5863, 	KL: 1368.0983
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1950-2000.pt
+ 64%|██████▍   | 90/140 [48:28<26:52, 32.24s/it] 65%|██████▌   | 91/140 [49:01<26:21, 32.27s/it] 66%|██████▌   | 92/140 [49:33<25:48, 32.26s/it] 66%|██████▋   | 93/140 [50:05<25:16, 32.26s/it] 67%|██████▋   | 94/140 [50:37<24:44, 32.27s/it]Iter: 1955/2000, 	Loss: 1288.7977, 	Log p(X): 68.2682, 	KL: 1357.0659
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1955-2000.pt
+ 68%|██████▊   | 95/140 [51:10<24:11, 32.26s/it] 69%|██████▊   | 96/140 [51:42<23:39, 32.26s/it] 69%|██████▉   | 97/140 [52:14<23:07, 32.27s/it] 70%|███████   | 98/140 [52:46<22:34, 32.26s/it] 71%|███████   | 99/140 [53:19<22:02, 32.26s/it]Iter: 1960/2000, 	Loss: 1315.2194, 	Log p(X): 62.7720, 	KL: 1377.9913
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1960-2000.pt
+ 71%|███████▏  | 100/140 [53:51<21:30, 32.27s/it] 72%|███████▏  | 101/140 [54:23<20:58, 32.27s/it] 73%|███████▎  | 102/140 [54:55<20:26, 32.27s/it] 74%|███████▎  | 103/140 [55:28<19:54, 32.30s/it] 74%|███████▍  | 104/140 [56:00<19:22, 32.28s/it]Iter: 1965/2000, 	Loss: 1619.7437, 	Log p(X): -118.6575, 	KL: 1501.0862
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1965-2000.pt
+ 75%|███████▌  | 105/140 [56:32<18:49, 32.28s/it] 76%|███████▌  | 106/140 [57:05<18:18, 32.30s/it] 76%|███████▋  | 107/140 [57:37<17:44, 32.27s/it] 77%|███████▋  | 108/140 [58:09<17:12, 32.26s/it] 78%|███████▊  | 109/140 [58:41<16:40, 32.28s/it]Iter: 1970/2000, 	Loss: 1685.7852, 	Log p(X): 68.8499, 	KL: 1754.6351
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1970-2000.pt
+ 79%|███████▊  | 110/140 [59:14<16:08, 32.28s/it] 79%|███████▉  | 111/140 [59:46<15:35, 32.28s/it] 80%|████████  | 112/140 [1:00:18<15:04, 32.31s/it] 81%|████████  | 113/140 [1:00:51<14:31, 32.28s/it] 81%|████████▏ | 114/140 [1:01:23<13:59, 32.27s/it]Iter: 1975/2000, 	Loss: 1486.4001, 	Log p(X): 115.4996, 	KL: 1601.8998
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1975-2000.pt
+ 82%|████████▏ | 115/140 [1:01:55<13:27, 32.29s/it] 83%|████████▎ | 116/140 [1:02:27<12:54, 32.28s/it] 84%|████████▎ | 117/140 [1:03:00<12:22, 32.27s/it] 84%|████████▍ | 118/140 [1:03:32<11:50, 32.30s/it] 85%|████████▌ | 119/140 [1:04:04<11:17, 32.28s/it]Iter: 1980/2000, 	Loss: 1387.7997, 	Log p(X): 112.8589, 	KL: 1500.6586
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1980-2000.pt
+ 86%|████████▌ | 120/140 [1:04:37<10:45, 32.27s/it] 86%|████████▋ | 121/140 [1:05:09<10:13, 32.29s/it] 87%|████████▋ | 122/140 [1:05:41<09:40, 32.28s/it] 88%|████████▊ | 123/140 [1:06:13<09:08, 32.27s/it] 89%|████████▊ | 124/140 [1:06:46<08:36, 32.29s/it]Iter: 1985/2000, 	Loss: 1518.8407, 	Log p(X): 86.5567, 	KL: 1605.3973
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1985-2000.pt
+ 89%|████████▉ | 125/140 [1:07:18<08:04, 32.29s/it] 90%|█████████ | 126/140 [1:07:50<07:31, 32.27s/it] 91%|█████████ | 127/140 [1:08:23<06:59, 32.29s/it] 91%|█████████▏| 128/140 [1:08:55<06:27, 32.27s/it] 92%|█████████▏| 129/140 [1:09:27<05:54, 32.27s/it]Iter: 1990/2000, 	Loss: 1454.8762, 	Log p(X): 163.5533, 	KL: 1618.4296
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1990-2000.pt
+ 93%|█████████▎| 130/140 [1:09:59<05:22, 32.29s/it] 94%|█████████▎| 131/140 [1:10:32<04:50, 32.27s/it] 94%|█████████▍| 132/140 [1:11:04<04:18, 32.26s/it] 95%|█████████▌| 133/140 [1:11:36<03:45, 32.28s/it] 96%|█████████▌| 134/140 [1:12:08<03:13, 32.27s/it]Iter: 1995/2000, 	Loss: 1488.3271, 	Log p(X): 114.3233, 	KL: 1602.6505
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_1995-2000.pt
+ 96%|█████████▋| 135/140 [1:12:41<02:41, 32.26s/it] 97%|█████████▋| 136/140 [1:13:13<02:09, 32.28s/it] 98%|█████████▊| 137/140 [1:13:45<01:36, 32.27s/it] 99%|█████████▊| 138/140 [1:14:18<01:04, 32.26s/it] 99%|█████████▉| 139/140 [1:14:50<00:32, 32.29s/it]Iter: 2000/2000, 	Loss: 1386.5693, 	Log p(X): 174.9902, 	KL: 1561.5594
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18_iter_2000-2000.pt
+100%|██████████| 140/140 [1:15:22<00:00, 32.28s/it]100%|██████████| 140/140 [1:15:22<00:00, 32.30s/it]
+Data saved at: ./code/data/climate/ito/data_climate_time_06-13_11-18.pt
+Model saved at: ./code/models/climate/ito/sde_climate_time_06-13_11-18.pt
+Job completed successfully.

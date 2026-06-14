@@ -1,5 +1,9 @@
-model : "./code/models/climate/sde_climate_time_06-11_16-17_iter_550-2000.pt"
-checkpoint :  550
+model : "./code/models/climate/ito/sde_climate_time_06-13_11-18.pt"
+# Strato model:
+# ./code/models/climate/strato/sde_climate_time_06-12_11-21.pt
+# Ito model:
+# ./code/models/climate/ito/sde_climate_time_06-13_11-18.pt
+checkpoint : 0
 
 sde :
   name : climate

@@ -1,5 +1,5 @@
-model : "./code/models/climate/strato/sde_climate_time_06-11_21-39_iter_865-2000.pt"
-checkpoint : 865
+model : "./code/models/climate/strato/sde_climate_time_06-12_08-27_iter_1785-2000.pt"
+checkpoint : 1785
 
 sde :
   name : climate
